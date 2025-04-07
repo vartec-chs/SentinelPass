@@ -1,0 +1,29 @@
+{
+	"compilerOptions": {
+		"composite": true,
+		"skipLibCheck": true,
+		"module": "ESNext",
+		"moduleResolution": "bundler",
+		"allowSyntheticDefaultImports": true,
+
+		"baseUrl": "./src",
+		"paths": {
+			"@/*": ["*"],
+			"@screens": ["screens"],
+			"@hooks": ["hooks"],
+			"@components": ["components"],
+			"@layouts": ["layouts"],
+			"@ui": ["ui"],
+			"@modules": ["modules"],
+			"@zod-schemas": ["zod-schemas"],
+			"@api": ["api"],
+			"@states": ["states"],
+			"@providers": ["providers"],
+			"@assets": ["assets"],
+			"@configs": ["configs"],
+			"@utils": ["utils"],
+			"@ts": ["types"]
+		}
+	},
+	"include": ["vite.config.ts"]
+}
