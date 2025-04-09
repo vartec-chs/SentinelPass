@@ -1,5 +1,5 @@
 import { DashboardPaper } from '@/ui'
-import { DashboardList, DashboardSidebar } from '@modules'
+import { DashboardList, DashboardSidebar, DashboardViewing } from '@modules'
 
 import type { FC } from 'react'
 
@@ -40,7 +40,11 @@ export const DashboardScreen: FC = () => {
 			<DashboardPaper sx={{ maxWidth: match ? '40%' : minWidth ? '50%' : '100%' }}>
 				<DashboardList sidebarFixed={match !== null && match} />
 			</DashboardPaper>
-			{minWidth && <DashboardPaper sx={{ width: match ? '35%' : '50%' }}>2</DashboardPaper>}
+			{minWidth && (
+				<DashboardPaper sx={{ width: match ? '35%' : '50%' }}>
+					<DashboardViewing />
+				</DashboardPaper>
+			)}
 		</Stack>
 	)
 }

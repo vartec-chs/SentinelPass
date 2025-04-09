@@ -7,6 +7,7 @@ import { MenuIcon, Settings, XIcon } from 'lucide-react'
 import { useClickOutside } from '@hooks'
 
 import { MainSection } from './components'
+import { SelectStorageMode } from './components/SelectStorageMode'
 
 interface DashboardSidebarProps {
 	fixed?: boolean
@@ -68,6 +69,7 @@ export const DashboardSidebar: FC<DashboardSidebarProps> = ({ fixed }) => {
 				<Stack sx={{ width: '100%', height: '100%' }} direction='column' gap={1}>
 					<Stack
 						ml={fixed ? 0 : 6}
+						// width='100%'
 						alignItems='center'
 						justifyContent='flex-end'
 						direction='row'
@@ -78,9 +80,7 @@ export const DashboardSidebar: FC<DashboardSidebarProps> = ({ fixed }) => {
 							borderRadius: 1,
 						})}
 					>
-						<IconButton size='medium'>
-							<Settings size={18} />
-						</IconButton>
+						<SelectStorageMode />
 					</Stack>
 					<Divider />
 

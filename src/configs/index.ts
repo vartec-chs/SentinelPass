@@ -3,7 +3,7 @@ import { load } from '@tauri-apps/plugin-store'
 export { PATHS } from './paths'
 export { darkTheme, lightTheme } from './theme'
 export { INVOKE_COMMANDS } from './invoke-commands'
-export { STORAGE_TYPE, BASE_FILTER } from './main'
+export { STORAGE_TYPE, BASE_FILTER } from './dashboard'
 
 export const APP_NAME = 'Sentinel Pass'
 export const EXTENSION_NAME = 'Sentinel Pass'

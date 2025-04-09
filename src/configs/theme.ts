@@ -62,7 +62,7 @@ const typography: TypographyVariantsOptions = {
 	fontFamily: '"Rubik","Roboto", "Helvetica", "Arial", sans-serif',
 }
 const shape: Theme['shape'] = {
-	borderRadius: 12,
+	borderRadius: 10,
 }
 const spacing: number = 8
 const direction: Theme['direction'] = 'rtl'

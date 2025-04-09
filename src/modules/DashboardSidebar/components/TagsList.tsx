@@ -11,17 +11,15 @@ import {
 	Typography,
 } from '@mui/material'
 
-import { FoldersIcon, Plus, User2 } from 'lucide-react'
+import { HomeIcon, Plus, StarIcon, TagIcon, User2 } from 'lucide-react'
 
-import { STORAGE_TYPE } from '@configs'
-
-export const CategoryList: FC = () => {
+export const TagsList: FC = () => {
 	return (
 		<Stack sx={{ width: '100%', overflow: 'hidden', pr: 0.2 }}>
 			<Stack direction='row' alignItems='center' gap={1} justifyContent='space-between'>
 				<Stack direction='row' alignItems='center' gap={1}>
-					<FoldersIcon size={20} />
-					<Typography variant='body2'>Категории:</Typography>
+					<TagIcon size={20} />
+					<Typography variant='body2'>Теги:</Typography>
 				</Stack>
 
 				<IconButton size='small'>
@@ -51,27 +49,6 @@ export const CategoryList: FC = () => {
 				})}
 			>
 				<List sx={{ width: '100%', overflow: 'hidden', pr: 0.2 }}>
-					{Object.entries(STORAGE_TYPE).map(([key, value]) => (
-						<ListItemButton
-							key={key}
-							sx={{
-								borderRadius: 1,
-								py: 0.5,
-								px: 1,
-								mb: 0.3,
-								display: 'flex',
-								alignItems: 'center',
-								gap: 1,
-							}}
-						>
-							{<value.icon size={20} />}
-							<ListItemText sx={{ '& .MuiTypography-root': { fontSize: 14 } }}>
-								{value.name}
-							</ListItemText>
-						</ListItemButton>
-					))}
-
-					<Divider />
 					{Array.from({ length: 100 }).map((_, index) => (
 						<ListItemButton
 							sx={(_) => ({
@@ -90,7 +67,7 @@ export const CategoryList: FC = () => {
 							<User2 size={20} />
 							<ListItemText
 								sx={{ '& .MuiTypography-root': { fontSize: 14 } }}
-								primary={`Category ${index + 1}`}
+								primary={`Tag ${index + 1}`}
 							/>
 						</ListItemButton>
 					))}
