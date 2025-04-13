@@ -5,7 +5,7 @@ import Menu, { MenuProps } from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import { alpha, styled } from '@mui/material/styles'
 
-import { ArrowDown, KeyRound, SquareAsterisk } from 'lucide-react'
+import { ArrowDown } from 'lucide-react'
 
 import { STORAGE_TYPE } from '@configs'
 
@@ -67,17 +67,14 @@ export function SelectStorageMode() {
 				aria-controls={open ? 'demo-customized-menu' : undefined}
 				aria-haspopup='true'
 				aria-expanded={open ? 'true' : undefined}
-				// variant='contained'
 				disableElevation
 				onClick={handleClick}
 				fullWidth
 				size='small'
-				startIcon={
-					select === STORAGE_TYPE.PASSWORDS ? <KeyRound size={20} /> : <SquareAsterisk size={20} />
-				}
+				startIcon={<select.icon size={20} />}
 				endIcon={<ArrowDown size={20} />}
 			>
-				{select === STORAGE_TYPE.PASSWORDS ? 'Пароли' : 'Аутентификаторы'}
+				{select.name}
 			</Button>
 			<StyledMenu
 				id='demo-customized-menu'
@@ -97,6 +94,7 @@ export function SelectStorageMode() {
 							handleClose()
 						}}
 						disableRipple
+						disabled={value.disabled}
 					>
 						{<value.icon size={20} />}
 						{value.name}

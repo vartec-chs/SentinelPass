@@ -16,8 +16,8 @@
     "@fontsource/rubik": "^5.2.5",
     "@hookform/resolvers": "^5.0.1",
     "@juggle/resize-observer": "^3.4.0",
-    "@mui/material": "^7.0.1",
-    "@tanstack/react-query": "^5.71.10",
+    "@mui/material": "^7.0.2",
+    "@tanstack/react-query": "^5.74.0",
     "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-clipboard-manager": "^2.2.2",
     "@tauri-apps/plugin-dialog": "^2.2.1",
@@ -28,8 +28,8 @@
     "@tauri-apps/plugin-process": "^2.2.1",
     "@tauri-apps/plugin-store": "^2.2.0",
     "@tauri-apps/plugin-stronghold": "^2.2.0",
-    "lucide-react": "^0.487.0",
-    "motion": "^12.6.3",
+    "lucide-react": "^0.488.0",
+    "motion": "^12.6.5",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-hook-form": "^7.55.0",
@@ -41,12 +41,12 @@
   "devDependencies": {
     "@tauri-apps/cli": "^2",
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
-    "@types/node": "^22.14.0",
+    "@types/node": "^22.14.1",
     "@types/react": "18.3.1",
     "@types/react-dom": "18.3.1",
     "@vitejs/plugin-react-swc": "^3.8.1",
     "prettier": "^3.5.3",
     "typescript": "~5.8.3",
-    "vite": "^6.2.5"
+    "vite": "^6.2.6"
   }
 }

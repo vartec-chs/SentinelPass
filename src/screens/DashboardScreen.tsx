@@ -1,11 +1,14 @@
-import { DashboardPaper } from '@/ui'
 import { DashboardList, DashboardSidebar, DashboardViewing } from '@modules'
+import { DashboardPaper } from '@ui'
 
 import type { FC } from 'react'
+import { useLocation, useParams } from 'react-router'
 
-import { colors, Paper, Stack } from '@mui/material'
+import { Stack } from '@mui/material'
 
 import { useWindowResize } from '@hooks'
+
+import { PATHS } from '@configs'
 
 export const DashboardScreen: FC = () => {
 	const { match } = useWindowResize({
@@ -13,8 +16,19 @@ export const DashboardScreen: FC = () => {
 	})
 
 	const { match: minWidth } = useWindowResize({
-		matches: ({ width, height }) => width !== null && width >= 650,
+		matches: ({ width, height }) => width !== null && width <= 650,
 	})
+
+	const { pathname } = useLocation()
+
+	const { id } = useParams()
+
+	const isViewing = pathname.includes(PATHS.DASHBOARD.VIEW_PASSWORD.ROOT) && Boolean(id)
+	const isAdding = pathname.includes(PATHS.DASHBOARD.ADD_NEW_PASSWORD)
+	const showWithMinWidth = minWidth && (isAdding || isViewing)
+	const isDashboard = pathname === `/${PATHS.DASHBOARD.ROOT}`
+
+	console.log(showWithMinWidth)
 
 	return (
 		<Stack
@@ -37,11 +51,13 @@ export const DashboardScreen: FC = () => {
 			}}
 		>
 			<DashboardSidebar fixed={match !== null && match} />
-			<DashboardPaper sx={{ maxWidth: match ? '40%' : minWidth ? '50%' : '100%' }}>
-				<DashboardList sidebarFixed={match !== null && match} />
-			</DashboardPaper>
-			{minWidth && (
-				<DashboardPaper sx={{ width: match ? '35%' : '50%' }}>
+			{(!showWithMinWidth || isDashboard) && (
+				<DashboardPaper sx={{ maxWidth: match ? '40%' : !minWidth ? '50%' : '100%' }}>
+					<DashboardList sidebarFixed={match !== null && match} />
+				</DashboardPaper>
+			)}
+			{(showWithMinWidth || !minWidth) && (
+				<DashboardPaper sx={{ width: match ? '35%' : '100%' }}>
 					<DashboardViewing />
 				</DashboardPaper>
 			)}

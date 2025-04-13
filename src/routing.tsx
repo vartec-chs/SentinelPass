@@ -25,6 +25,8 @@ export const Routing: FC = () => {
 
 					<Route path={PATHS.DASHBOARD.ROOT} element={<DashboardLayout />}>
 						<Route index element={<DashboardScreen />} />
+						<Route path={PATHS.DASHBOARD.ADD_NEW_PASSWORD} element={<DashboardScreen />} />
+						<Route path={PATHS.DASHBOARD.VIEW_PASSWORD.PARAMS} element={<DashboardScreen />} />
 					</Route>
 				</Route>
 			</Routes>

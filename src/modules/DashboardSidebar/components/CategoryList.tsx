@@ -13,11 +13,16 @@ import {
 
 import { FoldersIcon, Plus, User2 } from 'lucide-react'
 
-import { STORAGE_TYPE } from '@configs'
+import { BASE_FILTER } from '@configs'
+
+import { ListItem } from './ListItem'
 
 export const CategoryList: FC = () => {
+
+	const categories = Array.from({ length: 10 })
+
 	return (
-		<Stack sx={{ width: '100%', overflow: 'hidden', pr: 0.2 }}>
+		<Stack sx={{ width: '100%', overflow: 'hidden',  height: '50%', pr: 0.2 }}>
 			<Stack direction='row' alignItems='center' gap={1} justifyContent='space-between'>
 				<Stack direction='row' alignItems='center' gap={1}>
 					<FoldersIcon size={20} />
@@ -31,6 +36,8 @@ export const CategoryList: FC = () => {
 			<Box
 				sx={(theme) => ({
 					width: '100%',
+			
+					height: '100%',
 					overflow: 'auto',
 					scrollbarGutter: 'stable', // резервируем место под скроллбар
 
@@ -51,48 +58,23 @@ export const CategoryList: FC = () => {
 				})}
 			>
 				<List sx={{ width: '100%', overflow: 'hidden', pr: 0.2 }}>
-					{Object.entries(STORAGE_TYPE).map(([key, value]) => (
-						<ListItemButton
-							key={key}
-							sx={{
-								borderRadius: 1,
-								py: 0.5,
-								px: 1,
-								mb: 0.3,
-								display: 'flex',
-								alignItems: 'center',
-								gap: 1,
-							}}
-						>
-							{<value.icon size={20} />}
-							<ListItemText sx={{ '& .MuiTypography-root': { fontSize: 14 } }}>
-								{value.name}
-							</ListItemText>
-						</ListItemButton>
+					{Object.entries(BASE_FILTER).map(([key, value]) => (
+						<ListItem
+							index={Number(key)}
+							isEnd={Number(key) === Object.keys(BASE_FILTER).length - 1}
+							icon={<value.icon size={20} />}
+							title={value.name}
+						/>
 					))}
 
-					<Divider />
-					{Array.from({ length: 100 }).map((_, index) => (
-						<ListItemButton
-							sx={(_) => ({
-								borderRadius: 1,
-								py: 0.5,
-								px: 1,
-								mt: index === 0 ? 0.3 : 0,
-								mb: index === 99 ? 0 : 0.3,
-								display: 'flex',
-								alignItems: 'center',
-								gap: 1,
-							})}
-							selected={index === 0}
-							key={index}
-						>
-							<User2 size={20} />
-							<ListItemText
-								sx={{ '& .MuiTypography-root': { fontSize: 14 } }}
-								primary={`Category ${index + 1}`}
-							/>
-						</ListItemButton>
+					{categories.length > 0 && <Divider />}
+					{categories.map((_, index) => (
+						<ListItem
+							index={index}
+							isEnd={index === 0}
+							icon={<User2 size={20} />}
+							title='Category'
+						/>
 					))}
 				</List>
 			</Box>

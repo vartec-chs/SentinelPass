@@ -31,7 +31,7 @@ export const List: FC = () => {
 		>
 			<Stack gap={0.5} direction='column' pr={0.5}>
 				{Array.from({ length: 20 }).map((_, index) => (
-					<PasswordCard key={index} />
+					<PasswordCard id={index.toString()} key={index} />
 				))}
 			</Stack>
 		</Box>

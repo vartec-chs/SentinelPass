@@ -6,7 +6,7 @@ import MenuItem from '@mui/material/MenuItem'
 
 import { EllipsisVertical } from 'lucide-react'
 
-export default function HeaderMenu() {
+export const HeaderMenu: React.FC = () => {
 	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
 	const open = Boolean(anchorEl)
 	const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {

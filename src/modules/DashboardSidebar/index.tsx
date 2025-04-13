@@ -1,10 +1,13 @@
-import { type FC, useState } from 'react'
+import { PATHS } from '@/configs'
 
-import { Box, Divider, Drawer, IconButton, Stack } from '@mui/material'
+import { type FC, useEffect, useState } from 'react'
+import { useLocation, useParams } from 'react-router'
 
-import { MenuIcon, Settings, XIcon } from 'lucide-react'
+import { Divider, Drawer, IconButton, Stack } from '@mui/material'
 
-import { useClickOutside } from '@hooks'
+import { MenuIcon, XIcon } from 'lucide-react'
+
+import { useClickOutside, useWindowResize } from '@hooks'
 
 import { MainSection } from './components'
 import { SelectStorageMode } from './components/SelectStorageMode'
@@ -14,16 +17,31 @@ interface DashboardSidebarProps {
 }
 
 export const DashboardSidebar: FC<DashboardSidebarProps> = ({ fixed }) => {
+	const { pathname } = useLocation()
+
+	const { id } = useParams()
+	const { match: minWidth } = useWindowResize({
+		matches: ({ width, height }) => width !== null && width <= 650,
+	})
+	const isViewing = pathname.includes(PATHS.DASHBOARD.VIEW_PASSWORD.ROOT) && Boolean(id)
+	const isAdding = pathname.includes(PATHS.DASHBOARD.ADD_NEW_PASSWORD)
+	const showWithMinWidth = minWidth && (isAdding || isViewing)
 	const [open, setOpen] = useState(fixed ? true : false)
 	const ref = useClickOutside<HTMLDivElement>(() => {
-		if (!fixed && !open) {
+		if (!fixed && !open && !showWithMinWidth) {
 			setOpen(false)
 		}
 	})
 
+	useEffect(() => {
+		if (showWithMinWidth) {
+			setOpen(false)
+		}
+	}, [showWithMinWidth])
+
 	return (
 		<>
-			{!fixed && (
+			{!fixed && !showWithMinWidth && (
 				<IconButton
 					sx={{ position: 'absolute', top: 8.5, left: 8, zIndex: 2000 }}
 					onClick={() => setOpen(!open)}
@@ -66,16 +84,14 @@ export const DashboardSidebar: FC<DashboardSidebarProps> = ({ fixed }) => {
 				anchor='right'
 				open={fixed || open}
 			>
-				<Stack sx={{ width: '100%', height: '100%' }} direction='column' gap={1}>
+				<Stack sx={{ width: '100%', height: '100%' }} direction='column' gap={1.5}>
 					<Stack
 						ml={fixed ? 0 : 6}
-						// width='100%'
 						alignItems='center'
 						justifyContent='flex-end'
 						direction='row'
 						gap={1}
 						sx={(theme) => ({
-							// border: `1px solid ${theme.palette.divider}`,
 							padding: theme.spacing(0),
 							borderRadius: 1,
 						})}

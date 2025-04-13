@@ -13,9 +13,13 @@ import {
 
 import { HomeIcon, Plus, StarIcon, TagIcon, User2 } from 'lucide-react'
 
+import { ListItem } from './ListItem'
+
 export const TagsList: FC = () => {
+	const tags = Array.from({ length: 10 })
+
 	return (
-		<Stack sx={{ width: '100%', overflow: 'hidden', pr: 0.2 }}>
+		<Stack sx={{ width: '100%', overflow: 'hidden', height: '50%', pr: 0.2 }}>
 			<Stack direction='row' alignItems='center' gap={1} justifyContent='space-between'>
 				<Stack direction='row' alignItems='center' gap={1}>
 					<TagIcon size={20} />
@@ -49,27 +53,8 @@ export const TagsList: FC = () => {
 				})}
 			>
 				<List sx={{ width: '100%', overflow: 'hidden', pr: 0.2 }}>
-					{Array.from({ length: 100 }).map((_, index) => (
-						<ListItemButton
-							sx={(_) => ({
-								borderRadius: 1,
-								py: 0.5,
-								px: 1,
-								mt: index === 0 ? 0.3 : 0,
-								mb: index === 99 ? 0 : 0.3,
-								display: 'flex',
-								alignItems: 'center',
-								gap: 1,
-							})}
-							selected={index === 0}
-							key={index}
-						>
-							<User2 size={20} />
-							<ListItemText
-								sx={{ '& .MuiTypography-root': { fontSize: 14 } }}
-								primary={`Tag ${index + 1}`}
-							/>
-						</ListItemButton>
+					{tags.map((_, index) => (
+						<ListItem index={index} isEnd={index === 1} icon={<User2 size={20} />} title='Tag' />
 					))}
 				</List>
 			</Box>

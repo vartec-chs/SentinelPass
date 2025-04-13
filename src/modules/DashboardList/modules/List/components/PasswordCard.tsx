@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 
 import { type FC, useRef, useState } from 'react'
 import toast from 'react-hot-toast'
+import { useNavigate } from 'react-router'
 
 import {
 	Box,
@@ -22,17 +23,28 @@ import { HomeIcon, KeyRound, Link, Star, TagIcon, UserIcon } from 'lucide-react'
 
 import { useHover } from '@hooks'
 
+import { PATHS } from '@configs'
+
+interface PasswordCardProps {
+	id: string
+}
+
 const MotionCard = motion(Card)
 
-export const PasswordCard: FC = () => {
+export const PasswordCard: FC<PasswordCardProps> = ({ id }) => {
 	// const theme = useTheme()
 	const refPaper = useRef<HTMLDivElement>(null)
 	const [open, setOpen] = useState(false)
+	const navigate = useNavigate()
 	const hovering = useHover(refPaper)
 
 	// Можно заменить на реальные данные
 	const tags: string[] = [] // если пусто — верхний блок будет анимирован
 	const isFavorite = true
+
+	const openPassword = () => {
+		navigate(PATHS.DASHBOARD.VIEW_PASSWORD.PARAMS.replace(':id', id), { replace: true })
+	}
 
 	const StarIcon = (
 		<Star
@@ -41,6 +53,8 @@ export const PasswordCard: FC = () => {
 			color={isFavorite ? colors.yellow[700] : colors.grey[500]}
 		/>
 	)
+
+	console.log(PATHS.DASHBOARD.VIEW_PASSWORD.PARAMS.replace(':id', id))
 
 	return (
 		<MotionCard
@@ -126,7 +140,7 @@ export const PasswordCard: FC = () => {
 				)}
 			</AnimatePresence>
 
-			<CardActionArea onClick={() => toast.error('Not implemented')}>
+			<CardActionArea onClick={openPassword}>
 				<Stack direction='row'>
 					<Stack mt={1} ml={1} direction='column' gap={1.5} alignItems='center'>
 						<HomeIcon size={24} />

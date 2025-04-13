@@ -31,7 +31,6 @@ export const AppBar: FC = () => {
 	const { pathname } = useLocation()
 	const theme = useTheme()
 	const navigate = useNavigate()
-	
 
 	const isDashboard = pathname.includes(PATHS.DASHBOARD.ROOT)
 	const isPasswordGenerator = pathname.includes(PATHS.PASSWORD_GENERATOR)
@@ -143,6 +142,14 @@ export const AppBar: FC = () => {
 							})}
 						>
 							<Stack direction='row' gap={1} alignItems='center'>
+								<Typography
+									variant='h4'
+									fontWeight={400}
+									fontSize='16px'
+									color={theme.palette.text.primary}
+								>
+									{pathname}
+								</Typography>
 								<Typography
 									variant='h4'
 									fontWeight={400}

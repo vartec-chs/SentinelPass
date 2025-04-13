@@ -16,7 +16,7 @@ export const MainSection: FC = () => {
 				direction='row'
 				alignItems='center'
 				justifyContent='space-between'
-				sx={{ width: '100%' }}
+				sx={{ width: '100%', mb:1 }}
 			>
 				<Button size='small' color='error' startIcon={<Trash2 size={20} />}>
 					Корзина
