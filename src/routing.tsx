@@ -4,7 +4,6 @@ import { BrowserRouter, Route, Routes } from 'react-router'
 import { DashboardLayout, HomeLayout, MainLayout } from '@layouts'
 
 import {
-	DashboardScreen,
 	DashboardViewingScreen,
 	HomeScreen,
 	PasswordGeneratorScreen,

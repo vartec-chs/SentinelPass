@@ -2,7 +2,7 @@ export const PATHS = {
 	HOME: '/',
 	PASSWORD_GENERATOR: 'password-generator',
 	DASHBOARD: {
-		ROOT: 'dashboard',
+		ROOT: '/dashboard',
 		ADD_NEW_PASSWORD: '/dashboard/add-new-password',
 		VIEW_PASSWORD: {
 			ROOT: '/dashboard/view-password',

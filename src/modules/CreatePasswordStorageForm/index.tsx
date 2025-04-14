@@ -43,7 +43,7 @@ export const CreatePasswordStorageForm: FC = () => {
 		onSuccess: (res) => {
 			toast.success(res.message)
 			reset()
-			navigate(`/${PATHS.DASHBOARD.ROOT}`, { replace: true })
+			navigate(`${PATHS.DASHBOARD.ROOT}`, { replace: true })
 		},
 	})
 

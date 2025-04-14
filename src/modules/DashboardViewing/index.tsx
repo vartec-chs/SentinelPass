@@ -19,9 +19,9 @@ export const DashboardViewing: FC = () => {
 
 	const isViewing = pathname.includes(PATHS.DASHBOARD.VIEW_PASSWORD.ROOT) && Boolean(id)
 	const isAdding = pathname.includes(PATHS.DASHBOARD.ADD_NEW_PASSWORD)
-	const isDashboard = pathname === `/${PATHS.DASHBOARD.ROOT}`
+	const isDashboard = pathname === `${PATHS.DASHBOARD.ROOT}`
 
-	const close = () => navigate(`/${PATHS.DASHBOARD.ROOT}`, { replace: true })
+	const close = () => navigate(`${PATHS.DASHBOARD.ROOT}`, { replace: true })
 	if (isDashboard) return <NotOperation />
 
 	return (
