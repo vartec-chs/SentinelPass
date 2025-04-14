@@ -20,6 +20,8 @@ export const DashboardList: FC<DashboardListProps> = memo(({ sidebarFixed }) => 
 		navigate(PATHS.DASHBOARD.ADD_NEW_PASSWORD)
 	}
 
+	console.log('rerender DashboardList')
+
 	return (
 		<Stack sx={{ height: '100%', position: 'relative' }} gap={1}>
 			<Header sidebarFixed={sidebarFixed} />

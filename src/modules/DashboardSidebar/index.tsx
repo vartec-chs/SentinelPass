@@ -5,6 +5,8 @@ import { Divider, Drawer, IconButton, Stack } from '@mui/material'
 
 import { MenuIcon, XIcon } from 'lucide-react'
 
+import { useWindowResizeContext } from '@providers'
+
 import { useClickOutside, useWindowResize } from '@hooks'
 
 import { MATCHES, PATHS } from '@configs'
@@ -20,11 +22,7 @@ export const DashboardSidebar: FC<DashboardSidebarProps> = memo(({ fixed }) => {
 	const { pathname } = useLocation()
 
 	const { id } = useParams()
-	const { matchMap } = useWindowResize({
-		debounce: 300,
-		leading: true,
-		matches: MATCHES,
-	})
+	const { matchMap } = useWindowResizeContext()
 	const isViewing = pathname.includes(PATHS.DASHBOARD.VIEW_PASSWORD.ROOT) && Boolean(id)
 	const isAdding = pathname.includes(PATHS.DASHBOARD.ADD_NEW_PASSWORD)
 	const showWithMinWidth = matchMap.mobile && (isAdding || isViewing)
@@ -40,6 +38,8 @@ export const DashboardSidebar: FC<DashboardSidebarProps> = memo(({ fixed }) => {
 			setOpen(false)
 		}
 	}, [showWithMinWidth])
+
+	console.log('rerender DashboardSidebar')
 
 	return (
 		<>
