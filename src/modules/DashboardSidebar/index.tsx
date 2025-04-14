@@ -1,4 +1,4 @@
-import { type FC, useEffect, useState } from 'react'
+import { type FC, memo, useEffect, useState } from 'react'
 import { useLocation, useParams } from 'react-router'
 
 import { Divider, Drawer, IconButton, Stack } from '@mui/material'
@@ -16,7 +16,7 @@ interface DashboardSidebarProps {
 	fixed?: boolean
 }
 
-export const DashboardSidebar: FC<DashboardSidebarProps> = ({ fixed }) => {
+export const DashboardSidebar: FC<DashboardSidebarProps> = memo(({ fixed }) => {
 	const { pathname } = useLocation()
 
 	const { id } = useParams()
@@ -107,4 +107,4 @@ export const DashboardSidebar: FC<DashboardSidebarProps> = ({ fixed }) => {
 			</Drawer>
 		</>
 	)
-}
+})

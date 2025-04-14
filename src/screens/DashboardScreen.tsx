@@ -2,6 +2,7 @@ import { DashboardList, DashboardSidebar, DashboardViewing } from '@modules'
 import { DashboardPaper } from '@ui'
 
 import type { FC } from 'react'
+import { useMemo } from 'react'
 import { useLocation, useParams } from 'react-router'
 
 import { Stack } from '@mui/material'
@@ -16,15 +17,60 @@ export const DashboardScreen: FC = () => {
 		leading: true,
 		matches: MATCHES,
 	})
+
 	const { pathname } = useLocation()
 	const { id } = useParams()
 
-	const isViewing = pathname.includes(PATHS.DASHBOARD.VIEW_PASSWORD.ROOT) && Boolean(id)
-	const isAdding = pathname.includes(PATHS.DASHBOARD.ADD_NEW_PASSWORD)
-	const showWithMinWidth = matchMap.mobile && (isAdding || isViewing)
-	const isDashboard = pathname === `/${PATHS.DASHBOARD.ROOT}`
+	const {
+		isViewing,
+		isAdding,
+		isDashboard,
+		showWithMinWidth,
+		showList,
+		showViewing,
+		sidebarFixed,
+		listMaxWidth,
+		viewingWidth,
+		stackStyles,
+	} = useMemo(() => {
+		const isViewing = pathname.includes(PATHS.DASHBOARD.VIEW_PASSWORD.ROOT) && Boolean(id)
+		const isAdding = pathname.includes(PATHS.DASHBOARD.ADD_NEW_PASSWORD)
+		const isDashboard = pathname === `/${PATHS.DASHBOARD.ROOT}`
 
-	console.log(showWithMinWidth, id)
+		const showWithMinWidth = matchMap.mobile && (isAdding || isViewing)
+		const sidebarFixed = matchMap.tablet
+		const showList = !showWithMinWidth || isDashboard
+		const showViewing = showWithMinWidth || !matchMap.mobile
+
+		const listMaxWidth = sidebarFixed ? '40%' : !matchMap.mobile ? '50%' : '100%'
+		const viewingWidth = sidebarFixed ? '35%' : '100%'
+
+		const stackStyles = {
+			'& > :first-of-type': {
+				gap: 0,
+				marginLeft: sidebarFixed ? undefined : 0,
+			},
+			'& > :nth-of-type(2)': {
+				gap: 0,
+				marginLeft: sidebarFixed ? undefined : 0,
+			},
+		}
+
+		return {
+			isViewing,
+			isAdding,
+			isDashboard,
+			showWithMinWidth,
+			showList,
+			showViewing,
+			sidebarFixed,
+			listMaxWidth,
+			viewingWidth,
+			stackStyles,
+		}
+	}, [pathname, id, matchMap])
+
+	console.log('render')
 
 	return (
 		<Stack
@@ -35,27 +81,18 @@ export const DashboardScreen: FC = () => {
 			alignItems='center'
 			justifyContent='center'
 			position='relative'
-			sx={{
-				'& > :first-of-type': {
-					gap: 0,
-					marginLeft: matchMap.tablet ? undefined : 0,
-				},
-				'& > :nth-of-type(2)': {
-					gap: 0,
-					marginLeft: matchMap.tablet ? undefined : 0,
-				},
-			}}
+			sx={stackStyles}
 		>
-			<DashboardSidebar fixed={matchMap.tablet} />
-			{(!showWithMinWidth || isDashboard) && (
-				<DashboardPaper
-					sx={{ maxWidth: matchMap.tablet ? '40%' : !matchMap.mobile ? '50%' : '100%' }}
-				>
-					<DashboardList sidebarFixed={matchMap.tablet} />
+			<DashboardSidebar fixed={sidebarFixed} />
+
+			{showList && (
+				<DashboardPaper sx={{ maxWidth: listMaxWidth }}>
+					<DashboardList sidebarFixed={sidebarFixed} />
 				</DashboardPaper>
 			)}
-			{(showWithMinWidth || !matchMap.mobile) && (
-				<DashboardPaper sx={{ width: matchMap.tablet ? '35%' : '100%' }}>
+
+			{showViewing && (
+				<DashboardPaper sx={{ width: viewingWidth }}>
 					<DashboardViewing />
 				</DashboardPaper>
 			)}

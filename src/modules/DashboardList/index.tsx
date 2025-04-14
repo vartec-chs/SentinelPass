@@ -1,4 +1,4 @@
-import { type FC } from 'react'
+import { type FC, memo } from 'react'
 import { useNavigate } from 'react-router'
 
 import { Box, Fab, Pagination, Stack } from '@mui/material'
@@ -13,7 +13,7 @@ interface DashboardListProps {
 	sidebarFixed: boolean
 }
 
-export const DashboardList: FC<DashboardListProps> = ({ sidebarFixed }) => {
+export const DashboardList: FC<DashboardListProps> = memo(({ sidebarFixed }) => {
 	const navigate = useNavigate()
 
 	const handleAddNewPassword = () => {
@@ -35,4 +35,4 @@ export const DashboardList: FC<DashboardListProps> = ({ sidebarFixed }) => {
 			</Fab>
 		</Stack>
 	)
-}
+})
