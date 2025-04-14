@@ -1,6 +1,8 @@
 import { type FC } from 'react'
 
-import { Stack, TextField } from '@mui/material'
+import { IconButton, InputAdornment, Stack, TextField } from '@mui/material'
+
+import { SearchIcon } from 'lucide-react'
 
 import { HeaderMenu } from './HeaderMenu'
 
@@ -25,6 +27,17 @@ export const Header: FC<HeaderProps> = ({ sidebarFixed }) => {
 					variant='outlined'
 					label='Поиск'
 					placeholder='Поиск в All'
+					slotProps={{
+						input: {
+							endAdornment: (
+								<InputAdornment position='end'>
+									<IconButton size='small'>
+										<SearchIcon size={18} />
+									</IconButton>
+								</InputAdornment>
+							),
+						},
+					}}
 				/>
 				<HeaderMenu />
 			</Stack>

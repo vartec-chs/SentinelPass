@@ -8,27 +8,23 @@ import { Stack } from '@mui/material'
 
 import { useWindowResize } from '@hooks'
 
-import { PATHS } from '@configs'
+import { MATCHES, PATHS } from '@configs'
 
 export const DashboardScreen: FC = () => {
-	const { match } = useWindowResize({
-		matches: ({ width, height }) => width !== null && width >= 900,
+	const { matchMap } = useWindowResize({
+		debounce: 300,
+		leading: true,
+		matches: MATCHES,
 	})
-
-	const { match: minWidth } = useWindowResize({
-		matches: ({ width, height }) => width !== null && width <= 650,
-	})
-
 	const { pathname } = useLocation()
-
 	const { id } = useParams()
 
 	const isViewing = pathname.includes(PATHS.DASHBOARD.VIEW_PASSWORD.ROOT) && Boolean(id)
 	const isAdding = pathname.includes(PATHS.DASHBOARD.ADD_NEW_PASSWORD)
-	const showWithMinWidth = minWidth && (isAdding || isViewing)
+	const showWithMinWidth = matchMap.mobile && (isAdding || isViewing)
 	const isDashboard = pathname === `/${PATHS.DASHBOARD.ROOT}`
 
-	console.log(showWithMinWidth)
+	console.log(showWithMinWidth, id)
 
 	return (
 		<Stack
@@ -42,22 +38,24 @@ export const DashboardScreen: FC = () => {
 			sx={{
 				'& > :first-of-type': {
 					gap: 0,
-					marginLeft: match ? undefined : 0,
+					marginLeft: matchMap.tablet ? undefined : 0,
 				},
 				'& > :nth-of-type(2)': {
 					gap: 0,
-					marginLeft: match ? undefined : 0,
+					marginLeft: matchMap.tablet ? undefined : 0,
 				},
 			}}
 		>
-			<DashboardSidebar fixed={match !== null && match} />
+			<DashboardSidebar fixed={matchMap.tablet} />
 			{(!showWithMinWidth || isDashboard) && (
-				<DashboardPaper sx={{ maxWidth: match ? '40%' : !minWidth ? '50%' : '100%' }}>
-					<DashboardList sidebarFixed={match !== null && match} />
+				<DashboardPaper
+					sx={{ maxWidth: matchMap.tablet ? '40%' : !matchMap.mobile ? '50%' : '100%' }}
+				>
+					<DashboardList sidebarFixed={matchMap.tablet} />
 				</DashboardPaper>
 			)}
-			{(showWithMinWidth || !minWidth) && (
-				<DashboardPaper sx={{ width: match ? '35%' : '100%' }}>
+			{(showWithMinWidth || !matchMap.mobile) && (
+				<DashboardPaper sx={{ width: matchMap.tablet ? '35%' : '100%' }}>
 					<DashboardViewing />
 				</DashboardPaper>
 			)}

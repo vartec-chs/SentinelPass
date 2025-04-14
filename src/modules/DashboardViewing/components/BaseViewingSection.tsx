@@ -3,7 +3,6 @@ import { ScrollYBox } from '@/ui'
 import { type FC } from 'react'
 
 import {
-	Box,
 	Button,
 	Divider,
 	List,
@@ -12,6 +11,8 @@ import {
 	Stack,
 	Typography,
 } from '@mui/material'
+
+import { XIcon } from 'lucide-react'
 
 interface BaseViewingSectionProps {
 	isAdding: boolean
@@ -23,6 +24,9 @@ export const BaseViewingSection: FC<BaseViewingSectionProps> = ({ id, isAdding, 
 	return (
 		<Stack width='100%' height='100%' gap={0.5} justifyContent='space-between'>
 			<Stack p={1} pt={0.5}>
+				<Button size='large' color='warning' variant='text'>
+					<XIcon size={20} />
+				</Button>
 				<Typography variant='h6'>
 					{isAdding
 						? 'Добавление нового пароля'

@@ -1,11 +1,7 @@
-import { AnimatePresence, motion } from 'framer-motion'
-
 import { type FC, useRef, useState } from 'react'
-import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router'
 
 import {
-	Box,
 	Card,
 	CardActionArea,
 	CardActions,
@@ -16,10 +12,11 @@ import {
 	Stack,
 	Tooltip,
 	Typography,
-	useTheme,
 } from '@mui/material'
 
 import { HomeIcon, KeyRound, Link, Star, TagIcon, UserIcon } from 'lucide-react'
+
+import { AnimatePresence, motion } from 'motion/react'
 
 import { useHover } from '@hooks'
 
@@ -54,13 +51,16 @@ export const PasswordCard: FC<PasswordCardProps> = ({ id }) => {
 		/>
 	)
 
-	console.log(PATHS.DASHBOARD.VIEW_PASSWORD.PARAMS.replace(':id', id))
-
 	return (
 		<MotionCard
 			ref={refPaper}
-			sx={{ width: '100%', overflow: 'hidden' }}
-			whileHover={{ scale: 1.01, boxShadow: '0px 4px 20px rgba(0,0,0,0.1)' }}
+			sx={(theme) => ({
+				width: '100%',
+				overflow: 'hidden',
+				boxShadow: 'none',
+				backgroundColor: theme.palette.mode === 'dark' ? '' : colors.grey[100],
+			})}
+			whileHover={{ scale: 1.01, boxShadow: '0px 2px 3px rgba(0,0,0,0.1)' }}
 			whileTap={{ scale: 0.98 }}
 			layout // позволяет анимировать высоту и layout
 			transition={{ type: 'spring', stiffness: 250, damping: 20 }}

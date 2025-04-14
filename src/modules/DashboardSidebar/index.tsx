@@ -1,5 +1,3 @@
-import { PATHS } from '@/configs'
-
 import { type FC, useEffect, useState } from 'react'
 import { useLocation, useParams } from 'react-router'
 
@@ -8,6 +6,8 @@ import { Divider, Drawer, IconButton, Stack } from '@mui/material'
 import { MenuIcon, XIcon } from 'lucide-react'
 
 import { useClickOutside, useWindowResize } from '@hooks'
+
+import { MATCHES, PATHS } from '@configs'
 
 import { MainSection } from './components'
 import { SelectStorageMode } from './components/SelectStorageMode'
@@ -20,12 +20,14 @@ export const DashboardSidebar: FC<DashboardSidebarProps> = ({ fixed }) => {
 	const { pathname } = useLocation()
 
 	const { id } = useParams()
-	const { match: minWidth } = useWindowResize({
-		matches: ({ width, height }) => width !== null && width <= 650,
+	const { matchMap } = useWindowResize({
+		debounce: 300,
+		leading: true,
+		matches: MATCHES,
 	})
 	const isViewing = pathname.includes(PATHS.DASHBOARD.VIEW_PASSWORD.ROOT) && Boolean(id)
 	const isAdding = pathname.includes(PATHS.DASHBOARD.ADD_NEW_PASSWORD)
-	const showWithMinWidth = minWidth && (isAdding || isViewing)
+	const showWithMinWidth = matchMap.mobile && (isAdding || isViewing)
 	const [open, setOpen] = useState(fixed ? true : false)
 	const ref = useClickOutside<HTMLDivElement>(() => {
 		if (!fixed && !open && !showWithMinWidth) {

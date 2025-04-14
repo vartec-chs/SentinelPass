@@ -1,3 +1,5 @@
+import { ResizeCondition } from '@/hooks'
+
 import { HomeIcon, KeyRoundIcon, NotebookIcon, SquareAsteriskIcon, StarIcon } from 'lucide-react'
 
 type BASE = {
@@ -16,7 +18,7 @@ export const BASE_FILTER: Record<string, BASE> = {
 	},
 }
 
-export const STORAGE_TYPE: Record<string, {disabled: boolean} & BASE> = {
+export const STORAGE_TYPE: Record<string, { disabled: boolean } & BASE> = {
 	PASSWORDS: {
 		name: 'Passwords',
 		icon: SquareAsteriskIcon,
@@ -33,3 +35,8 @@ export const STORAGE_TYPE: Record<string, {disabled: boolean} & BASE> = {
 		disabled: true,
 	},
 }
+
+export const MATCHES: ResizeCondition[] = [
+	{ id: 'mobile', match: ({ width }) => width < 600 },
+	{ id: 'tablet', match: ({ width }) => width >= 900 },
+]
