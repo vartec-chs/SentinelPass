@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { getCurrentWindow, PhysicalSize } from '@tauri-apps/api/window'
 
@@ -18,6 +18,7 @@ type UseWindowResizeOptions<T extends string> = {
 	throttle?: number
 	leading?: boolean
 }
+
 type MatchMap<T extends string> = Record<T, boolean>
 
 export const useWindowResize = <T extends string = string>({
@@ -36,7 +37,10 @@ export const useWindowResize = <T extends string = string>({
 	const lastCallRef = useRef<number>(0)
 	const hasCalledLeadingRef = useRef<boolean>(false)
 
-	const memoizedMatches = useMemo(() => matches, [JSON.stringify(matches)])
+	const memoizedMatchesRef = useRef(matches)
+	useEffect(() => {
+		memoizedMatchesRef.current = matches
+	}, [matches])
 
 	const executeResize = (newSize: PhysicalSize) => {
 		const { width, height } = newSize
@@ -45,10 +49,12 @@ export const useWindowResize = <T extends string = string>({
 		const newMatchMap = {} as MatchMap<T>
 
 		let hasChanged = false
+		let sizeChanged = size.width !== width || size.height !== height
 
-		memoizedMatches.forEach((condition, index) => {
-			const key = condition.id
+		for (const condition of memoizedMatchesRef.current) {
+			const key = condition.id as T // 👈 явно указываем тип
 			const result = condition.match({ width, height })
+
 			newMatchArray.push(result)
 			newMatchMap[key] = result
 
@@ -59,9 +65,7 @@ export const useWindowResize = <T extends string = string>({
 			if (result && condition.onResize) {
 				condition.onResize(newSize)
 			}
-		})
-
-		const sizeChanged = size.width !== width || size.height !== height
+		}
 
 		if (sizeChanged) {
 			setSize({ width, height })
@@ -136,7 +140,7 @@ export const useWindowResize = <T extends string = string>({
 			hasCalledLeadingRef.current = false
 			lastCallRef.current = 0
 		}
-	}, [onResize, memoizedMatches, debounce, throttle, leading])
+	}, [onResize, debounce, throttle, leading])
 
 	return {
 		width: size.width,

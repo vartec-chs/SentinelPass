@@ -3,7 +3,7 @@ import { DashboardList, DashboardSidebar } from '@modules'
 import { DashboardPaper } from '@ui'
 
 import { FC, useMemo } from 'react'
-import { Outlet, useLocation, useParams } from 'react-router'
+import { Outlet, useLocation } from 'react-router'
 
 import { Stack } from '@mui/material'
 

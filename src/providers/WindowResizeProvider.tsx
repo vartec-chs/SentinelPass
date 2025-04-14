@@ -28,6 +28,7 @@ export const WindowResizeProvider: FC<PropsWithChildren> = ({ children }) => {
 		matches: MATCHES,
 	})
 
+	console.log('WindowResizeProvider rerender')
 	return (
 		<WindowResizeContext.Provider value={{ matchMap, width, height }}>
 			{children}
