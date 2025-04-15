@@ -17,6 +17,11 @@ export const BASE_FILTER: Record<string, BASE> = {
 		icon: StarIcon,
 	},
 }
+export enum STORAGE_NAME {
+	PASSWORDS = 'passwords',
+	AUTHENTICATION = 'authentication',
+	NOTES = 'notes',
+}
 
 export const STORAGE_TYPE: Record<string, { disabled: boolean } & BASE> = {
 	PASSWORDS: {

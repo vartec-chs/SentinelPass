@@ -32,19 +32,6 @@ export const MainLayout: FC = () => {
 }
 
 const Wrapper: FC<{ children: React.ReactNode }> = ({ children }) => {
-	const { pathname } = useLocation()
-	// const isDashboard = pathname.includes(PATHS.DASHBOARD.ROOT)
-
-	// const { match } = useWindowResize({
-	// 	matches: ({ width, height }) =>
-	// 		(width !== null && width >= 810) || (height !== null && height >= 635),
-	// })
-
-	// const { match: dashboardMatch } = useWindowResize({
-	// 	matches: ({ width, height }) =>
-	// 		(width !== null && width >= 1080) || (height !== null && height >= 635),
-	// })
-
 	return (
 		<Box
 			sx={(theme) => ({

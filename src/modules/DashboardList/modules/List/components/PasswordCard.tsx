@@ -60,7 +60,7 @@ export const PasswordCard: FC<PasswordCardProps> = ({ id }) => {
 				boxShadow: 'none',
 				backgroundColor: theme.palette.mode === 'dark' ? '' : colors.grey[100],
 			})}
-			whileHover={{ scale: 1.01, boxShadow: '0px 2px 3px rgba(0,0,0,0.1)' }}
+			whileHover={{ boxShadow: '0px 2px 3px rgba(0,0,0,0.1)' }}
 			whileTap={{ scale: 0.98 }}
 			layout // позволяет анимировать высоту и layout
 			transition={{ type: 'spring', stiffness: 250, damping: 20 }}

@@ -22,6 +22,7 @@ export const ScrollYBox: FC<ScrollYBox> = forwardRef<HTMLDivElement, ScrollYBox>
 
 					'&::-webkit-scrollbar': {
 						width: '4px', // Ширина скроллбара
+						height: '4px',
 					},
 					'&::-webkit-scrollbar-track': {
 						background: theme.palette.mode === 'dark' ? '#222' : '#f0f0f0', // Цвет фона

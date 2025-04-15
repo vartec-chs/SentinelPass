@@ -42,6 +42,7 @@ export const AppBar: FC = () => {
 	const closeWindow = async () => {
 		await appWindow.close()
 	}
+
 	const getTitle = async () => {
 		return await appWindow.title()
 	}
@@ -78,6 +79,7 @@ export const AppBar: FC = () => {
 				borderRadius: 0,
 				// borderBottom: '1px solid rgba(0, 0, 0, 0.1)',
 				px: 1,
+				pt: 0.5,
 				width: '100%',
 				height: '30px',
 				display: 'flex',
@@ -130,7 +132,7 @@ export const AppBar: FC = () => {
 								height: '30px',
 								padding: 1,
 								position: 'absolute',
-								top: '51%',
+								top: '52%',
 								left: '50%',
 								transform: 'translate(-50%, -45%)',
 								backgroundColor: 'transparent',
@@ -197,7 +199,12 @@ export const AppBar: FC = () => {
 					<IconButton
 						onClick={closeWindow}
 						size='small'
-						sx={{ ':hover': { backgroundColor: 'tomato' } }}
+						sx={(theme) => ({
+							':hover': {
+								backgroundColor: theme.palette.mode === 'dark' ? colors.red[500] : colors.red[500],
+								color: colors.grey[200],
+							},
+						})}
 					>
 						<X size={16} />
 					</IconButton>
