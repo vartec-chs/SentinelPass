@@ -1,3 +1,5 @@
+import { ConfirmProvider } from 'material-ui-confirm'
+
 import { ThemeProvider } from './theme-providers'
 import { ToastsProvider } from './toasts-provider'
 import { useWindowResizeContext, WindowResizeProvider } from './WindowResizeProvider'
@@ -7,7 +9,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 		<ThemeProvider>
 			<WindowResizeProvider>
 				<ToastsProvider />
-				{children}
+				<ConfirmProvider>{children}</ConfirmProvider>
 			</WindowResizeProvider>
 		</ThemeProvider>
 	)

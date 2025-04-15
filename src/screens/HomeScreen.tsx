@@ -1,3 +1,5 @@
+import { useConfirm } from 'material-ui-confirm'
+
 import { type FC, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router'
@@ -20,6 +22,21 @@ import { INVOKE_COMMANDS, PATHS } from '@configs'
 export const HomeScreen: FC = () => {
 	const [passwordGenButtonIsDisabled, setPasswordGenButtonIsDisabled] = useState(true)
 	const navigate = useNavigate()
+
+	const confirm = useConfirm()
+
+	const handleClick = async () => {
+		const { confirmed, reason } = await confirm({
+			description: 'This action is permanent!',
+		})
+
+		if (confirmed) {
+			/* ... */
+		}
+
+		console.log(reason)
+		//=> "confirm" | "cancel" | "natural" | "unmount"
+	}
 
 	useEffect(() => {
 		checkWindowIsExist('password-generator').then((isExist) => {
@@ -96,6 +113,8 @@ export const HomeScreen: FC = () => {
 				>
 					Генератор паролей
 				</Button>
+
+				<Button onClick={handleClick}>Open Confirm</Button>
 			</Paper>
 		</AnimationScreen>
 	)

@@ -20,7 +20,7 @@ export const DashboardLayout: FC = () => {
 		useMemo(() => {
 			const isViewing = pathname.includes(PATHS.DASHBOARD.VIEW_PASSWORD.ROOT)
 			const isAdding = pathname.includes(PATHS.DASHBOARD.ADD_NEW_PASSWORD)
-			const isDashboard = pathname === `/${PATHS.DASHBOARD.ROOT}`
+			const isDashboard = pathname === `${PATHS.DASHBOARD.ROOT}`
 
 			const showWithMinWidth = matchMap.mobile && (isViewing || isAdding)
 			const showList = !showWithMinWidth || isDashboard
