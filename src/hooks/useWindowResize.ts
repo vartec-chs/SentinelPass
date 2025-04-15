@@ -19,7 +19,7 @@ type UseWindowResizeOptions<T extends string> = {
 	leading?: boolean
 }
 
-type MatchMap<T extends string> = Record<T, boolean>
+export type MatchMap<T extends string> = Record<T, boolean>
 
 export const useWindowResize = <T extends string = string>({
 	onResize,
