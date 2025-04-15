@@ -1,7 +1,6 @@
-import { type FC } from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router'
+import { createBrowserRouter } from 'react-router'
 
-import { DashboardLayout, HomeLayout, MainLayout } from '@layouts'
+import { DashboardLayout, DashboardRenderer, HomeLayout, MainLayout } from '@layouts'
 
 import {
 	DashboardViewingScreen,
@@ -14,27 +13,52 @@ import { PATHS } from '@configs'
 
 import { NotOperation } from './modules/DashboardViewing/components/NotOperation'
 
-export const Routing: FC = () => {
-	return (
-		<BrowserRouter>
-			<Routes>
-				<Route element={<MainLayout />}>
-					<Route path={PATHS.HOME} element={<HomeLayout />}>
-						<Route index element={<HomeScreen />} />
-						<Route path={PATHS.PASSWORD_STORAGE.ROOT} element={<PasswordStorageScreen />} />
-						<Route path={PATHS.PASSWORD_GENERATOR} element={<PasswordGeneratorScreen />} />
-					</Route>
-
-					<Route path={PATHS.DASHBOARD.ROOT} element={<DashboardLayout />}>
-						<Route index element={<NotOperation />} />
-						<Route
-							path={PATHS.DASHBOARD.VIEW_PASSWORD.PARAMS}
-							element={<DashboardViewingScreen />}
-						/>
-						<Route path={PATHS.DASHBOARD.ADD_NEW_PASSWORD} element={<DashboardViewingScreen />} />
-					</Route>
-				</Route>
-			</Routes>
-		</BrowserRouter>
-	)
-}
+export const router = createBrowserRouter([
+	{
+		path: '/',
+		element: <MainLayout />,
+		children: [
+			{
+				path: PATHS.HOME,
+				element: <HomeLayout />,
+				children: [
+					{
+						index: true,
+						element: <HomeScreen />,
+					},
+					{
+						path: PATHS.PASSWORD_STORAGE.ROOT,
+						element: <PasswordStorageScreen />,
+					},
+					{
+						path: PATHS.PASSWORD_GENERATOR,
+						element: <PasswordGeneratorScreen />,
+					},
+				],
+			},
+			{
+				path: PATHS.DASHBOARD.ROOT,
+				element: <DashboardLayout />,
+				children: [
+					{
+						element: <DashboardRenderer />, // если ты используешь layout внутри Dashboard
+						children: [
+							{
+								index: true,
+								element: <NotOperation />,
+							},
+							{
+								path: PATHS.DASHBOARD.VIEW_PASSWORD.PARAMS,
+								element: <DashboardViewingScreen />,
+							},
+							{
+								path: PATHS.DASHBOARD.ADD_NEW_PASSWORD,
+								element: <DashboardViewingScreen />,
+							},
+						],
+					},
+				],
+			},
+		],
+	},
+])

@@ -2,12 +2,13 @@
 import { DashboardSidebar } from '@modules'
 
 import { FC, useMemo } from 'react'
+import { Outlet } from 'react-router'
 
 import { Stack } from '@mui/material'
 
 import { useWindowResizeContext } from '@providers'
 
-import { DashboardContent } from './DashboardContent'
+export * from './DashboardRenderer'
 
 export const DashboardLayout: FC = () => {
 	const { matchMap } = useWindowResizeContext()
@@ -29,6 +30,8 @@ export const DashboardLayout: FC = () => {
 		[sidebarFixed],
 	)
 
+	console.log('rerender DashboardLayout')
+
 	return (
 		<Stack
 			spacing={0.5}
@@ -41,12 +44,7 @@ export const DashboardLayout: FC = () => {
 			sx={stackStyles}
 		>
 			<DashboardSidebar fixed={sidebarFixed} />
-			<DashboardContent
-				matchMap={matchMap}
-				sidebarFixed={sidebarFixed}
-				listMaxWidth={listMaxWidth}
-				viewingWidth={viewingWidth}
-			/>
+			<Outlet context={{ sidebarFixed, listMaxWidth, viewingWidth, matchMap }} />
 		</Stack>
 	)
 }

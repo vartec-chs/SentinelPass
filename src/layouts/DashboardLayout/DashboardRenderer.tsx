@@ -1,20 +1,20 @@
+import { MatchMap } from '@/hooks'
 import { DashboardList } from '@modules'
 import { DashboardPaper } from '@ui'
 
 import { FC } from 'react'
-import { Outlet, useLocation } from 'react-router'
-
-import { MatchMap } from '@hooks'
+import { useLocation, useOutletContext } from 'react-router'
+import { Outlet } from 'react-router'
 
 import { PATHS } from '@configs'
 
-// DashboardContent.tsx — зависит от pathname
-export const DashboardContent: FC<{
-	matchMap: MatchMap<string>
-	sidebarFixed: boolean
-	listMaxWidth: string
-	viewingWidth: string
-}> = ({ matchMap, sidebarFixed, listMaxWidth, viewingWidth }) => {
+export const DashboardRenderer: FC = () => {
+	const { sidebarFixed, listMaxWidth, viewingWidth, matchMap } = useOutletContext<{
+		sidebarFixed: boolean
+		listMaxWidth: string
+		viewingWidth: string
+		matchMap: MatchMap<string>
+	}>()
 	const { pathname } = useLocation()
 
 	const isViewing = pathname.includes(PATHS.DASHBOARD.VIEW_PASSWORD.ROOT)

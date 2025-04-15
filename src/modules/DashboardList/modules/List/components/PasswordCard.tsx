@@ -40,7 +40,7 @@ export const PasswordCard: FC<PasswordCardProps> = ({ id }) => {
 	const isFavorite = true
 
 	const openPassword = () => {
-		navigate(PATHS.DASHBOARD.VIEW_PASSWORD.PARAMS.replace(':id', id), { replace: true })
+		navigate(PATHS.DASHBOARD.VIEW_PASSWORD.PARAMS.replace(':id', id))
 	}
 
 	const StarIcon = (
