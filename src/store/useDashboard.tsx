@@ -21,6 +21,9 @@ interface DashboardStore {
 	tags?: string[]
 	setTags: (tags: string[]) => void
 
+	currentCardId?: string
+	setCurrentCardId: (id: string) => void
+
 	reset: () => void
 }
 
@@ -34,6 +37,7 @@ export const useDashboardStore = create<DashboardStore>((set) => ({
 			isTrashCategory: false,
 			category: undefined,
 			tags: undefined,
+			currentCardId: undefined,
 		}),
 
 	isAll: true,
@@ -51,6 +55,9 @@ export const useDashboardStore = create<DashboardStore>((set) => ({
 
 	tags: undefined,
 	setTags: (tags) => set({ tags }),
+
+	currentCardId: undefined,
+	setCurrentCardId: (id) => set({ currentCardId: id }),
 
 	reset: () =>
 		set({

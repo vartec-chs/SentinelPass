@@ -1,3 +1,4 @@
+import { useDashboardStore } from '@/store'
 import { ScrollYBox } from '@ui'
 
 import { type FC } from 'react'
@@ -15,9 +16,11 @@ import { AddNewPasswordForm } from './modules/AddNewPasswordForm'
 export const DashboardViewing: FC = () => {
 	const { pathname } = useLocation()
 	const navigate = useNavigate()
-	const { id } = useParams()
+	// const { id } = useParams()
 
-	const isViewing = pathname.includes(PATHS.DASHBOARD.VIEW_PASSWORD.ROOT) && Boolean(id)
+	const { currentCardId, setCurrentCardId } = useDashboardStore()
+
+	const isViewing = pathname.includes(PATHS.DASHBOARD.VIEW_PASSWORD.ROOT) && currentCardId
 	const isAdding = pathname.includes(PATHS.DASHBOARD.ADD_NEW_PASSWORD)
 	const isDashboard = pathname === `${PATHS.DASHBOARD.ROOT}`
 
@@ -41,7 +44,15 @@ export const DashboardViewing: FC = () => {
 			</Stack>
 			<Divider />
 
-			<ScrollYBox>{isAdding && <AddNewPasswordForm />}</ScrollYBox>
+			<ScrollYBox>
+				{isAdding ? (
+					<AddNewPasswordForm />
+				) : isViewing ? (
+					<Typography variant='body1'>Пароль выбран {currentCardId}</Typography>
+				) : (
+					<NotOperation />
+				)}
+			</ScrollYBox>
 
 			<Stack direction='row' gap={1} justifyContent='space-between'>
 				<Button fullWidth size='large' variant='contained'>

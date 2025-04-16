@@ -48,7 +48,7 @@ export const router = createBrowserRouter([
 								element: <NotOperation />,
 							},
 							{
-								path: PATHS.DASHBOARD.VIEW_PASSWORD.PARAMS,
+								path: PATHS.DASHBOARD.VIEW_PASSWORD.ROOT,
 								element: <DashboardViewingScreen />,
 							},
 							{

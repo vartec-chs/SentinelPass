@@ -17,12 +17,12 @@ interface Props {
 
 export const DashboardSidebarToggleButton: FC<Props> = ({ open, onToggle, setOpen, fixed }) => {
 	const { pathname } = useLocation()
-	const { id } = useParams()
+	// const { id } = useParams()
 	const { matchMap } = useWindowResizeContext()
 
 	const isViewing = useMemo(
-		() => pathname.includes(PATHS.DASHBOARD.VIEW_PASSWORD.ROOT) && Boolean(id),
-		[pathname, id],
+		() => pathname.includes(PATHS.DASHBOARD.VIEW_PASSWORD.ROOT),
+		[pathname],
 	)
 	const isAdding = useMemo(() => pathname.includes(PATHS.DASHBOARD.ADD_NEW_PASSWORD), [pathname])
 	const showWithMinWidth = useMemo(

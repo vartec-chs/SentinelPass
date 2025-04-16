@@ -1,5 +1,7 @@
+import { useDashboardStore } from '@store'
+
 import { type FC, useRef, useState } from 'react'
-import { useNavigate } from 'react-router'
+import { useLocation, useNavigate } from 'react-router'
 
 import {
 	Card,
@@ -32,17 +34,23 @@ export const PasswordCard: FC<PasswordCardProps> = ({ id }) => {
 	// const theme = useTheme()
 	const refPaper = useRef<HTMLDivElement>(null)
 	const [open, setOpen] = useState(false)
+	const { pathname } = useLocation()
 	const navigate = useNavigate()
 	const hovering = useHover(refPaper)
+
+	const { currentCardId, setCurrentCardId } = useDashboardStore()
 
 	// Можно заменить на реальные данные
 	const tags: string[] = [] // если пусто — верхний блок будет анимирован
 	const isFavorite = true
 
 	const openPassword = () => {
-		navigate(PATHS.DASHBOARD.VIEW_PASSWORD.PARAMS.replace(':id', id))
+		if (id !== currentCardId) {
+			setCurrentCardId(id)
+		}
+		if (pathname.includes(PATHS.DASHBOARD.VIEW_PASSWORD.ROOT)) return
+		navigate(PATHS.DASHBOARD.VIEW_PASSWORD.ROOT)
 	}
-
 	const StarIcon = (
 		<Star
 			size={18}
