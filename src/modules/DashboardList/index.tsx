@@ -1,7 +1,7 @@
 import { type FC, memo } from 'react'
 import { useNavigate } from 'react-router'
 
-import { Box, Fab, Pagination, Stack } from '@mui/material'
+import { Fab, Pagination, Stack } from '@mui/material'
 
 import { PlusIcon } from 'lucide-react'
 

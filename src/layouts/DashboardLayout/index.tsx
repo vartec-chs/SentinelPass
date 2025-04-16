@@ -1,4 +1,3 @@
-// screens/DashboardLayout.tsx
 import { DashboardSidebar } from '@modules'
 
 import { FC, useMemo } from 'react'
