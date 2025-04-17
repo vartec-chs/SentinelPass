@@ -15,6 +15,7 @@ export default defineConfig(async () => ({
 			'@screens': resolve(__dirname, 'src/screens'),
 			'@hooks': resolve(__dirname, 'src/hooks'),
 			'@components': resolve(__dirname, 'src/components'),
+			'@store': resolve(__dirname, 'src/store'),
 			'@layouts': resolve(__dirname, 'src/layouts'),
 			'@ui': resolve(__dirname, 'src/ui'),
 			'@modules': resolve(__dirname, 'src/modules'),

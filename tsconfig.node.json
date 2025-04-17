@@ -13,6 +13,7 @@
 			"@hooks": ["hooks"],
 			"@components": ["components"],
 			"@layouts": ["layouts"],
+			"@store": ["store"],
 			"@ui": ["ui"],
 			"@modules": ["modules"],
 			"@zod-schemas": ["zod-schemas"],
