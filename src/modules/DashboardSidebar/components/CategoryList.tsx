@@ -1,3 +1,5 @@
+import { CategoryModal } from '@modules'
+
 import { type FC } from 'react'
 
 import {
@@ -18,25 +20,25 @@ import { BASE_FILTER } from '@configs'
 import { ListItem } from './ListItem'
 
 export const CategoryList: FC = () => {
-
 	const categories = Array.from({ length: 10 })
 
 	return (
-		<Stack sx={{ width: '100%', overflow: 'hidden',  height: '50%', pr: 0.2 }}>
+		<Stack sx={{ width: '100%', overflow: 'hidden', height: '50%', pr: 0.2 }}>
 			<Stack direction='row' alignItems='center' gap={1} justifyContent='space-between'>
 				<Stack direction='row' alignItems='center' gap={1}>
 					<FoldersIcon size={20} />
 					<Typography variant='body2'>Категории:</Typography>
 				</Stack>
 
-				<IconButton size='small'>
+				{/* <IconButton size='small'>
 					<Plus size={20} />
-				</IconButton>
+				</IconButton> */}
+				<CategoryModal />
 			</Stack>
 			<Box
 				sx={(theme) => ({
 					width: '100%',
-			
+
 					height: '100%',
 					overflow: 'auto',
 					scrollbarGutter: 'stable', // резервируем место под скроллбар

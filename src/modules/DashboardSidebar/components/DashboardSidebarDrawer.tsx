@@ -33,11 +33,13 @@ export const DashboardSidebarDrawer: FC<Props> = memo(({ fixed, open, onClose })
 					boxSizing: 'border-box',
 					padding: theme.spacing(1),
 					width: fixed ? '100%' : '300px',
+					height: '100%',
 					left: 0,
 					top: 1,
 					border: !fixed ? `1px solid ${theme.palette.divider}` : 'none',
 					transform: open ? 'translateX(0)' : 'translateX(-120%)',
 					transition: 'transform 0.3s ease-in-out',
+					zIndex: 1000,
 				},
 			})}
 		>

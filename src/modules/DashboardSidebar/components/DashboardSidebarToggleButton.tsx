@@ -37,7 +37,7 @@ export const DashboardSidebarToggleButton: FC<Props> = ({ open, onToggle, setOpe
 	if (fixed || showWithMinWidth) return null
 
 	return (
-		<IconButton onClick={onToggle} sx={{ position: 'absolute', top: 8.5, left: 8, zIndex: 2000 }}>
+		<IconButton onClick={onToggle} sx={{ position: 'absolute', top: 8.5, left: 8, zIndex: 1001 }}>
 			{open ? <XIcon size={24} /> : <MenuIcon size={24} />}
 		</IconButton>
 	)
