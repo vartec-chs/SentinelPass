@@ -1,10 +1,11 @@
-use commands::{db_store_cmd, password_generator_cmd, icon_cmd};
+use commands::{db_store_cmd, icon_cmd, password_generator_cmd};
 
 use states::main_state::MainState;
 
 pub mod commands;
 pub mod db;
 pub mod dto;
+pub mod service;
 pub mod states;
 pub mod utils;
 
@@ -26,11 +27,9 @@ pub async fn run() {
             db_store_cmd::create_store_cmd,
             db_store_cmd::open_store_cmd,
             db_store_cmd::close_store_cmd,
-
             password_generator_cmd::generate_password_cmd,
             password_generator_cmd::open_password_generator_cmd,
             password_generator_cmd::close_password_generator_cmd,
-
             icon_cmd::load_icon_base64
         ])
         .run(tauri::generate_context!())

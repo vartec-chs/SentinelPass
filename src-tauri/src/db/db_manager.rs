@@ -1,13 +1,15 @@
 use rusqlite::{params, Connection, Error as RusqliteError, OpenFlags};
-use std::{path::PathBuf, sync::Arc};
+use std::{
+    path::PathBuf,
+    sync::{Arc, Mutex},
+};
 use tauri_plugin_store::StoreExt;
-use tokio::{sync::Mutex, task::spawn_blocking};
 
 use crate::db::models::password_storage::PasswordStorageModel;
 
 pub struct DBManager {
     connection: Arc<Mutex<Option<Connection>>>,
-    path: Option<PathBuf>,
+    path: Arc<Mutex<Option<PathBuf>>>,
 }
 
 #[derive(Debug, thiserror::Error)]
@@ -26,132 +28,100 @@ impl DBManager {
     pub fn init() -> Self {
         Self {
             connection: Arc::new(Mutex::new(None)),
-            path: None,
+            path: Arc::new(Mutex::new(None)),
         }
     }
 
-    pub fn set_path(&mut self, path: PathBuf) {
-        self.path = Some(path);
+    pub fn set_path(&self, path: PathBuf) {
+        let mut guard = self.path.lock().unwrap();
+        *guard = Some(path);
     }
 
     pub fn get_path(&self) -> Option<PathBuf> {
-        self.path.clone()
+        self.path.lock().unwrap().clone()
     }
 
-    /// Создание новой базы данных и таблицы
-    pub async fn create(
-        &mut self,
+    pub fn get_connection(&self) -> &Arc<Mutex<Option<Connection>>> {
+        &self.connection
+    }
+
+    /// Создание новой базы данных и таблицы (SYCN, для spawn_blocking)
+    pub fn create_sync(
+        &self,
         path: PathBuf,
         data: PasswordStorageModel,
     ) -> Result<(), DbOpenError> {
-        let path_db = path.clone();
         let key = data.master_password.clone();
+        let flags = OpenFlags::SQLITE_OPEN_READ_WRITE | OpenFlags::SQLITE_OPEN_CREATE;
+        let conn = Connection::open_with_flags(&path, flags).map_err(DbOpenError::Database)?;
 
-        let connection = spawn_blocking(move || -> Result<Connection, DbOpenError> {
-            let flags = OpenFlags::SQLITE_OPEN_READ_WRITE | OpenFlags::SQLITE_OPEN_CREATE;
-            let conn =
-                Connection::open_with_flags(path_db, flags).map_err(DbOpenError::Database)?;
+        conn.pragma_update(None, "key", &key)
+            .map_err(DbOpenError::Database)?;
 
-            // Устанавливаем ключ безопасно
-            conn.pragma_update(None, "key", &key)
-                .map_err(DbOpenError::Database)?;
+        Self::create_main_table(&conn, &data).map_err(DbOpenError::Database)?;
 
-            // Создаём таблицу и вставляем запись
-            Self::create_main_table(&conn, &data).map_err(DbOpenError::Database)?;
-
-            Ok(conn)
-        })
-        .await
-        .map_err(|_| DbOpenError::TaskJoinError)??;
-
-        {
-            let mut conn_lock = self.connection.lock().await;
-            *conn_lock = Some(connection);
-        }
-
-        self.path = Some(path);
+        *self.connection.lock().unwrap() = Some(conn);
+        *self.path.lock().unwrap() = Some(path);
 
         Ok(())
     }
 
-    /// Открытие базы данных с проверкой валидности пароля
-    pub async fn open(
-        &mut self,
-        path: PathBuf,
-        master_password: String,
-    ) -> Result<(), DbOpenError> {
-        let path_db = path.clone();
+    /// Открытие базы данных с проверкой валидности пароля (SYNC)
+    pub fn open_sync(&self, path: PathBuf, master_password: String) -> Result<(), DbOpenError> {
         let key = master_password.clone();
+        let flags = OpenFlags::SQLITE_OPEN_READ_WRITE | OpenFlags::SQLITE_OPEN_CREATE;
+        let conn = Connection::open_with_flags(&path, flags).map_err(DbOpenError::Database)?;
 
-        let connection = spawn_blocking(move || -> Result<Connection, DbOpenError> {
-            let flags = OpenFlags::SQLITE_OPEN_READ_WRITE | OpenFlags::SQLITE_OPEN_CREATE;
-            let conn =
-                Connection::open_with_flags(path_db, flags).map_err(DbOpenError::Database)?;
-
-            conn.pragma_update(None, "key", &key)
-                .map_err(DbOpenError::Database)?;
-
-            // Проверка пароля внутри блока, чтобы stmt освободился
-            {
-                let mut stmt = conn
-                    .prepare("SELECT id FROM password_storage LIMIT 1")
-                    .map_err(|err| match err {
-                        RusqliteError::SqliteFailure(_, _) => DbOpenError::InvalidKey,
-                        other => DbOpenError::Database(other),
-                    })?;
-
-                let result: Result<String, RusqliteError> = stmt.query_row([], |row| row.get(0));
-
-                match result {
-                    Ok(_) => {}
-                    Err(RusqliteError::QueryReturnedNoRows) => {}
-                    Err(RusqliteError::SqliteFailure(_, _)) => {
-                        return Err(DbOpenError::InvalidKey);
-                    }
-                    Err(err) => {
-                        return Err(DbOpenError::Database(err));
-                    }
-                }
-            }
-
-            Ok(conn)
-        })
-        .await
-        .map_err(|_| DbOpenError::TaskJoinError)??;
+        conn.pragma_update(None, "key", &key)
+            .map_err(DbOpenError::Database)?;
 
         {
-            let mut conn_lock = self.connection.lock().await;
-            *conn_lock = Some(connection);
-        }
+            let mut stmt = conn
+                .prepare("SELECT id FROM password_storage LIMIT 1")
+                .map_err(|err| match err {
+                    RusqliteError::SqliteFailure(_, _) => DbOpenError::InvalidKey,
+                    other => DbOpenError::Database(other),
+                })?;
 
-        self.path = Some(path);
-
-        Ok(())
-    }
-
-    /// Закрытие соединения с базой данных и сохранение пути в settings.json
-    pub async fn close(&mut self, app_handle: &tauri::AppHandle) -> Result<String, DbOpenError> {
-        if let Some(conn) = self.connection.lock().await.take() {
-            let result = spawn_blocking(move || conn.close())
-                .await
-                .map_err(|_| DbOpenError::TaskJoinError)?;
+            let result: Result<String, RusqliteError> = stmt.query_row([], |row| row.get(0));
 
             match result {
+                Ok(_) => {}
+                Err(RusqliteError::QueryReturnedNoRows) => {}
+                Err(RusqliteError::SqliteFailure(_, _)) => {
+                    return Err(DbOpenError::InvalidKey);
+                }
+                Err(err) => {
+                    return Err(DbOpenError::Database(err));
+                }
+            }
+        }
+
+        *self.connection.lock().unwrap() = Some(conn);
+        *self.path.lock().unwrap() = Some(path);
+
+        Ok(())
+    }
+
+    /// Закрытие соединения с базой данных и сохранение пути в settings.json (SYNC)
+    pub fn close_sync(&self, app_handle: &tauri::AppHandle) -> Result<String, DbOpenError> {
+        let mut lock = self.connection.lock().unwrap();
+
+        if let Some(conn) = lock.take() {
+            match conn.close() {
                 Ok(_) => {
                     // Сохраняем путь в settings.json
                     if let Ok(settings) = app_handle.store("settings.json") {
-                        if let Some(path) = self.path.to_owned() {
+                        if let Some(path) = self.path.lock().unwrap().to_owned() {
                             settings.set("db_path", path.to_str().unwrap());
-                            // settings.save() можно добавить, если необходимо
                         }
                     }
-
                     println!("Соединение с базой данных успешно закрыто.");
                     Ok("Соединение с базой данных успешно закрыто.".to_string())
                 }
                 Err((conn, err)) => {
                     println!("Ошибка при закрытии соединения: {}", err);
-                    *self.connection.lock().await = Some(conn);
+                    *lock = Some(conn);
                     Err(DbOpenError::Database(err))
                 }
             }

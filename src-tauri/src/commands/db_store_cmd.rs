@@ -4,7 +4,7 @@ use crate::states::main_state::MainState;
 use crate::utils::cmd_result::{ApiError, ApiResult};
 use crate::utils::window_size::{set_default_size, set_size_dashboard};
 use std::path::PathBuf;
-use tauri::{AppHandle, State};
+use tauri::State;
 
 #[tauri::command]
 pub async fn create_store_cmd(
@@ -21,8 +21,9 @@ pub async fn create_store_cmd(
         dto.master_password,
     );
 
-    let mut db_manager = state.db_manager.lock().await;
-    match db_manager.create(path_buf, data).await {
+    let db_manager_mt = state.db_manager.lock();
+    let db_manager = db_manager_mt.as_ref().unwrap();
+    match db_manager.create_sync(path_buf, data) {
         Ok(_) => {
             set_size_dashboard(&app_handle);
             Ok(ApiResult::success(
@@ -56,8 +57,9 @@ pub async fn open_store_cmd(
             None,
         ));
     }
-    let mut db_manager = state.db_manager.lock().await;
-    match db_manager.open(path_buf, dto.master_password).await {
+    let db_manager_mt = state.db_manager.lock();
+    let db_manager = db_manager_mt.as_ref().unwrap();
+    match db_manager.open_sync(path_buf, dto.master_password) {
         Ok(_) => {
             set_size_dashboard(&app_handle);
             Ok(ApiResult::success(
@@ -97,8 +99,9 @@ pub async fn close_store_cmd(
     state: State<'_, MainState>,
     app_handle: tauri::AppHandle,
 ) -> Result<ApiResult<()>, ApiResult<()>> {
-    let mut db_manager = state.db_manager.lock().await;
-    match db_manager.close(&app_handle).await {
+	let db_manager_mt = state.db_manager.lock();
+    let db_manager = db_manager_mt.as_ref().unwrap();
+    match db_manager.close_sync(&app_handle) {
         Ok(_) => {
             set_default_size(&app_handle);
             Ok(ApiResult::success(
