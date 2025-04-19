@@ -1,17 +1,25 @@
 import { type FC, ReactNode } from 'react'
 
-import { ListItemButton, ListItemText } from '@mui/material'
+import { ListItemButton, ListItemButtonProps, ListItemText } from '@mui/material'
 
-interface ListItemProps {
+interface ListItemProps extends ListItemButtonProps {
 	index: number
 	isEnd: boolean
-	icon: ReactNode
+	icon?: ReactNode
 	title: string
 	onClick?: () => void
 	selected?: boolean
 }
 
-export const ListItem: FC<ListItemProps> = ({ index, isEnd, icon, title, onClick, selected }) => {
+export const ListItem: FC<ListItemProps> = ({
+	index,
+	isEnd,
+	icon,
+	title,
+	onClick,
+	selected,
+	...props
+}) => {
 	return (
 		<ListItemButton
 			sx={(_) => ({
@@ -24,6 +32,7 @@ export const ListItem: FC<ListItemProps> = ({ index, isEnd, icon, title, onClick
 				alignItems: 'center',
 				gap: 1,
 			})}
+			{...props}
 			selected={selected}
 			key={index}
 			onClick={onClick}

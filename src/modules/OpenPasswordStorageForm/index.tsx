@@ -34,7 +34,7 @@ export const OpenPasswordStorageForm: FC = () => {
 		formState: { errors, isValid },
 	} = useForm<OpenPasswordStorageSchema>({
 		resolver: zodResolver(openPasswordStorageSchema),
-		mode: 'onChange',
+		mode: 'all',
 	})
 
 	useEffect(() => {
@@ -43,7 +43,6 @@ export const OpenPasswordStorageForm: FC = () => {
 			console.log(dbPath)
 			if (dbPath) {
 				setValue('path', dbPath)
-
 				setFocus('masterPassword')
 			}
 		}
@@ -79,7 +78,7 @@ export const OpenPasswordStorageForm: FC = () => {
 			.then((path) => {
 				if (path) {
 					setValue('path', path)
-					setFocus('path')
+					setFocus('masterPassword')
 				} else {
 					toast.error('Путь не выбран')
 				}

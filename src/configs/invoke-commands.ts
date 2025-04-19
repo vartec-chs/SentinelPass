@@ -10,4 +10,8 @@ export const INVOKE_COMMANDS = {
 		close: 'close_password_generator_cmd',
 		generate: 'generate_password_cmd',
 	},
+
+	icon: {
+		loadIconBase64: 'load_icon_base64',
+	},
 }

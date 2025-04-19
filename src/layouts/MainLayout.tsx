@@ -1,14 +1,9 @@
-import { PATHS } from '@/configs'
 import { AppBar } from '@modules'
 
 import { type FC } from 'react'
-import { Outlet, useLocation } from 'react-router'
+import { Outlet } from 'react-router'
 
 import { Box } from '@mui/material'
-
-import { useWindowResize } from '@hooks'
-
-// import { PATHS } from '@configs'
 
 export const MainLayout: FC = () => {
 	return (
@@ -19,6 +14,7 @@ export const MainLayout: FC = () => {
 				flexDirection: 'column',
 				justifyItems: 'center',
 				alignItems: 'center',
+				gap: 0,
 				height: '100vh',
 				width: '100vw',
 			}}
@@ -34,7 +30,7 @@ export const MainLayout: FC = () => {
 const Wrapper: FC<{ children: React.ReactNode }> = ({ children }) => {
 	return (
 		<Box
-			sx={(theme) => ({
+			sx={(_) => ({
 				display: 'flex',
 				flexDirection: 'column',
 				height: 'calc(100vh - 30px)',

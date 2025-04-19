@@ -3,7 +3,7 @@ import { DashboardSidebar } from '@modules'
 import { FC, useMemo } from 'react'
 import { Outlet } from 'react-router'
 
-import { Stack } from '@mui/material'
+import { Box, Stack } from '@mui/material'
 
 import { useWindowResizeContext } from '@providers'
 

@@ -31,7 +31,7 @@ export const DashboardList: FC<DashboardListProps> = memo(({ sidebarFixed }) => 
 				onClick={handleAddNewPassword}
 				color='primary'
 				aria-label='add'
-				sx={{ position: 'absolute', bottom: 0, right: 0 }}
+				sx={{ position: 'absolute', bottom: 0, right: 0, zIndex: 998 }}
 			>
 				<PlusIcon />
 			</Fab>

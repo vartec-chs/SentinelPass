@@ -1,17 +1,10 @@
+import { TagModal } from '@modules'
+
 import { type FC } from 'react'
 
-import {
-	Box,
-	Divider,
-	IconButton,
-	List,
-	ListItemButton,
-	ListItemText,
-	Stack,
-	Typography,
-} from '@mui/material'
+import { Box, List, Stack, Typography } from '@mui/material'
 
-import { HomeIcon, Plus, StarIcon, TagIcon, User2 } from 'lucide-react'
+import { TagIcon } from 'lucide-react'
 
 import { ListItem } from './ListItem'
 
@@ -26,9 +19,7 @@ export const TagsList: FC = () => {
 					<Typography variant='body2'>Теги:</Typography>
 				</Stack>
 
-				<IconButton size='small'>
-					<Plus size={20} />
-				</IconButton>
+				<TagModal />
 			</Stack>
 			<Box
 				sx={(theme) => ({
@@ -54,7 +45,7 @@ export const TagsList: FC = () => {
 			>
 				<List sx={{ width: '100%', overflow: 'hidden', pr: 0.2 }}>
 					{tags.map((_, index) => (
-						<ListItem index={index} isEnd={index === 1} icon={<User2 size={20} />} title='Tag' />
+						<ListItem index={index} isEnd={index === 1} title='Tag' />
 					))}
 				</List>
 			</Box>

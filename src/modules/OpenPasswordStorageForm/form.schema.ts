@@ -16,6 +16,7 @@ export const openPasswordStorageSchema = z.object({
 		.string({
 			message: 'Ключ шифрования должен быть строкой',
 		})
+		.min(1, 'Ключ шифрования не может быть пустым')
 		.describe('Ключ шифрования'),
 })
 
