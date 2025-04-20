@@ -1,6 +1,6 @@
-use crate::db::db_manager::DbOpenError;
+use crate::db::db_manager_async::DBManagerError;
 use crate::dto::db_store_dto::{CreateStoreDto, OpenStoreDto};
-use crate::states::main_state::MainState;
+use crate::states::db_async_state::DBAsyncState;
 use crate::utils::cmd_result::{ApiError, ApiResult};
 use crate::utils::window_size::{set_default_size, set_size_dashboard};
 use std::path::PathBuf;
@@ -9,7 +9,7 @@ use tauri::State;
 #[tauri::command]
 pub async fn create_store_cmd(
     app_handle: tauri::AppHandle,
-    state: State<'_, MainState>,
+    state: State<'_, DBAsyncState>,
     dto: CreateStoreDto,
 ) -> Result<ApiResult<()>, ApiResult<()>> {
     let path_buf = PathBuf::from(dto.path);
@@ -21,9 +21,8 @@ pub async fn create_store_cmd(
         dto.master_password,
     );
 
-    let db_manager_mt = state.db_manager.lock();
-    let db_manager = db_manager_mt.as_ref().unwrap();
-    match db_manager.create_sync(path_buf, data) {
+    let mut db_manager = state.db_manager.lock().await;
+    match db_manager.create(path_buf, data).await {
         Ok(_) => {
             set_size_dashboard(&app_handle);
             Ok(ApiResult::success(
@@ -41,10 +40,11 @@ pub async fn create_store_cmd(
         )),
     }
 }
+
 #[tauri::command]
 pub async fn open_store_cmd(
     app_handle: tauri::AppHandle,
-    state: State<'_, MainState>,
+    state: State<'_, DBAsyncState>,
     dto: OpenStoreDto,
 ) -> Result<ApiResult<()>, ApiResult<()>> {
     let path_buf = PathBuf::from(dto.path);
@@ -57,9 +57,8 @@ pub async fn open_store_cmd(
             None,
         ));
     }
-    let db_manager_mt = state.db_manager.lock();
-    let db_manager = db_manager_mt.as_ref().unwrap();
-    match db_manager.open_sync(path_buf, dto.master_password) {
+    let mut db_manager = state.db_manager.lock().await;
+    match db_manager.open(path_buf, dto.master_password).await {
         Ok(_) => {
             set_size_dashboard(&app_handle);
             Ok(ApiResult::success(
@@ -69,24 +68,24 @@ pub async fn open_store_cmd(
             ))
         }
         Err(e) => match e {
-            DbOpenError::Database(e) => Err(ApiResult::error(
+            DBManagerError::Database(e) => Err(ApiResult::error(
                 ApiError::DBError {
                     code: 500,
                     message: format!("Ошибка открытия хранилища: {}", e),
                 },
                 None,
             )),
-            DbOpenError::InvalidKey => Err(ApiResult::error(
+            DBManagerError::InvalidKey => Err(ApiResult::error(
                 ApiError::DBError {
                     code: 401,
                     message: "Неверный ключ шифрования".to_string(),
                 },
                 None,
             )),
-            DbOpenError::TaskJoinError => Err(ApiResult::error(
-                ApiError::InternalError {
-                    code: 50,
-                    message: "Ошибка выполнения задачи".to_string(),
+            DBManagerError::AsyncDatabase(e) => Err(ApiResult::error(
+                ApiError::DBError {
+                    code: 500,
+                    message: format!("Ошибка открытия хранилища: {}", e),
                 },
                 None,
             )),
@@ -96,12 +95,11 @@ pub async fn open_store_cmd(
 
 #[tauri::command]
 pub async fn close_store_cmd(
-    state: State<'_, MainState>,
+    state: State<'_, DBAsyncState>,
     app_handle: tauri::AppHandle,
 ) -> Result<ApiResult<()>, ApiResult<()>> {
-	let db_manager_mt = state.db_manager.lock();
-    let db_manager = db_manager_mt.as_ref().unwrap();
-    match db_manager.close_sync(&app_handle) {
+    let mut db_manager = state.db_manager.lock().await;
+    match db_manager.close().await {
         Ok(_) => {
             set_default_size(&app_handle);
             Ok(ApiResult::success(

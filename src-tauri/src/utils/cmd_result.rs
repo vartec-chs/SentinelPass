@@ -96,3 +96,20 @@ impl std::fmt::Display for ApiError {
         }
     }
 }
+
+pub fn handle_command<T, F>(f: F) -> ApiResult<T>
+where
+    F: FnOnce() -> Result<T, ApiError> + std::panic::UnwindSafe,
+{
+    match std::panic::catch_unwind(f) {
+        Ok(Ok(data)) => ApiResult::success(0, "Успешно", Some(data)),
+        Ok(Err(err)) => ApiResult::error(err, None),
+        Err(_) => ApiResult::error(
+            ApiError::InternalError {
+                code: 1,
+                message: "Неожиданная ошибка (panic)".into(),
+            },
+            None,
+        ),
+    }
+}

@@ -1,7 +1,7 @@
 use chrono::Utc;
 use uuid::Uuid;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct PasswordStorageModel {
     pub id: Uuid,
     pub name: String,

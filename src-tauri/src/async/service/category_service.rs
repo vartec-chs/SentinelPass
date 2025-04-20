@@ -1,7 +1,7 @@
 use std::sync::{Arc, Mutex};
 
 use anyhow::{Error, Result};
-use rusqlite::{params, Connection};
+use tokio_sqlcipher::{params, Connection};
 
 use crate::{
     db::models::category::Category,
@@ -11,14 +11,11 @@ use crate::{
 pub struct CategoryService;
 impl CategoryService {
     /// Создание новой категории
-    pub async fn create(
-        conn: &Arc<Mutex<Option<Connection>>>,
-        dto: CreateCategoryDto,
-    ) -> Result<CategoryDto> {
+    pub async fn create(conn: &Arc<Option<Connection>>, dto: CreateCategoryDto) -> Result<CategoryDto> {
         let category = Category::new(dto.name, dto.description, dto.icon);
         let insert = category.clone();
 
-        let conn = Arc::clone(&conn);
+        let conn = Arc::clone(conn);
         tokio::task::spawn_blocking(move || {
             let conn_mt = conn
                 .lock()
@@ -47,7 +44,7 @@ impl CategoryService {
 
     /// Обновление категории
     // pub async fn update(conn: &Arc<Mutex<Option<Connection>>>, category: &UpdateCategoryDto) -> Result<()> {
-	
+
     //     let updated = Category {
     //         updated_at: chrono::Utc::now().to_rfc3339(),
     //         ..category.clone()

@@ -9,78 +9,67 @@ use crate::db::models::password_storage::PasswordStorageModel;
 
 pub struct DBManager {
     connection: Arc<Mutex<Option<Connection>>>,
-    path: Arc<Mutex<Option<PathBuf>>>,
+    path: Option<PathBuf>,
+}
+
+impl Default for DBManager {
+    fn default() -> Self {
+        Self {
+            connection: Arc::new(Mutex::new(None)),
+            path: None,
+        }
+    }
 }
 
 #[derive(Debug, thiserror::Error)]
-pub enum DbOpenError {
+pub enum DBManagerError {
     #[error("Ошибка базы данных: {0}")]
     Database(#[from] RusqliteError),
-
     #[error("Неверный ключ шифрования")]
     InvalidKey,
-
-    #[error("Ошибка выполнения задачи")]
-    TaskJoinError,
 }
 
 impl DBManager {
-    pub fn init() -> Self {
-        Self {
-            connection: Arc::new(Mutex::new(None)),
-            path: Arc::new(Mutex::new(None)),
-        }
-    }
-
-    pub fn set_path(&self, path: PathBuf) {
-        let mut guard = self.path.lock().unwrap();
-        *guard = Some(path);
+    pub fn set_path(&mut self, path: PathBuf) {
+        self.path = Some(path);
     }
 
     pub fn get_path(&self) -> Option<PathBuf> {
-        self.path.lock().unwrap().clone()
+        self.path.clone()
     }
 
-    pub fn get_connection(&self) -> &Arc<Mutex<Option<Connection>>> {
-        &self.connection
-    }
-
-    /// Создание новой базы данных и таблицы (SYCN, для spawn_blocking)
-    pub fn create_sync(
-        &self,
+    /// Создание новой базы данных и таблицы
+    pub fn create(
+        &mut self,
         path: PathBuf,
         data: PasswordStorageModel,
-    ) -> Result<(), DbOpenError> {
-        let key = data.master_password.clone();
+    ) -> Result<(), DBManagerError> {
         let flags = OpenFlags::SQLITE_OPEN_READ_WRITE | OpenFlags::SQLITE_OPEN_CREATE;
-        let conn = Connection::open_with_flags(&path, flags).map_err(DbOpenError::Database)?;
+        let conn = Connection::open_with_flags(&path, flags)?;
 
-        conn.pragma_update(None, "key", &key)
-            .map_err(DbOpenError::Database)?;
+        conn.pragma_update(None, "key", &data.master_password)?;
+        Self::create_main_table(&conn, &data)?;
 
-        Self::create_main_table(&conn, &data).map_err(DbOpenError::Database)?;
-
-        *self.connection.lock().unwrap() = Some(conn);
-        *self.path.lock().unwrap() = Some(path);
+        let mut lock = self.connection.lock().unwrap();
+        *lock = Some(conn);
+        self.path = Some(path);
 
         Ok(())
     }
 
-    /// Открытие базы данных с проверкой валидности пароля (SYNC)
-    pub fn open_sync(&self, path: PathBuf, master_password: String) -> Result<(), DbOpenError> {
-        let key = master_password.clone();
+    /// Открытие базы данных с проверкой валидности пароля
+    pub fn open(&mut self, path: PathBuf, master_password: String) -> Result<(), DBManagerError> {
         let flags = OpenFlags::SQLITE_OPEN_READ_WRITE | OpenFlags::SQLITE_OPEN_CREATE;
-        let conn = Connection::open_with_flags(&path, flags).map_err(DbOpenError::Database)?;
+        let conn = Connection::open_with_flags(&path, flags)?;
 
-        conn.pragma_update(None, "key", &key)
-            .map_err(DbOpenError::Database)?;
+        conn.pragma_update(None, "key", &master_password)?;
 
         {
             let mut stmt = conn
                 .prepare("SELECT id FROM password_storage LIMIT 1")
                 .map_err(|err| match err {
-                    RusqliteError::SqliteFailure(_, _) => DbOpenError::InvalidKey,
-                    other => DbOpenError::Database(other),
+                    RusqliteError::SqliteFailure(_, _) => DBManagerError::InvalidKey,
+                    other => DBManagerError::Database(other),
                 })?;
 
             let result: Result<String, RusqliteError> = stmt.query_row([], |row| row.get(0));
@@ -88,41 +77,40 @@ impl DBManager {
             match result {
                 Ok(_) => {}
                 Err(RusqliteError::QueryReturnedNoRows) => {}
-                Err(RusqliteError::SqliteFailure(_, _)) => {
-                    return Err(DbOpenError::InvalidKey);
-                }
-                Err(err) => {
-                    return Err(DbOpenError::Database(err));
-                }
+                Err(RusqliteError::SqliteFailure(_, _)) => return Err(DBManagerError::InvalidKey),
+                Err(err) => return Err(DBManagerError::Database(err)),
             }
         }
 
-        *self.connection.lock().unwrap() = Some(conn);
-        *self.path.lock().unwrap() = Some(path);
+        let mut lock = self.connection.lock().unwrap();
+        *lock = Some(conn);
+        self.path = Some(path);
 
         Ok(())
     }
 
-    /// Закрытие соединения с базой данных и сохранение пути в settings.json (SYNC)
-    pub fn close_sync(&self, app_handle: &tauri::AppHandle) -> Result<String, DbOpenError> {
+    /// Закрытие соединения с базой данных и сохранение пути
+    pub fn close(&mut self, app_handle: &tauri::AppHandle) -> Result<String, DBManagerError> {
         let mut lock = self.connection.lock().unwrap();
-
         if let Some(conn) = lock.take() {
-            match conn.close() {
+            let result = conn.close();
+
+            match result {
                 Ok(_) => {
-                    // Сохраняем путь в settings.json
                     if let Ok(settings) = app_handle.store("settings.json") {
-                        if let Some(path) = self.path.lock().unwrap().to_owned() {
+                        if let Some(path) = self.path.clone() {
                             settings.set("db_path", path.to_str().unwrap());
+                            // settings.save(); // если нужно
                         }
                     }
+
                     println!("Соединение с базой данных успешно закрыто.");
                     Ok("Соединение с базой данных успешно закрыто.".to_string())
                 }
                 Err((conn, err)) => {
                     println!("Ошибка при закрытии соединения: {}", err);
                     *lock = Some(conn);
-                    Err(DbOpenError::Database(err))
+                    Err(DBManagerError::Database(err))
                 }
             }
         } else {
@@ -163,5 +151,18 @@ impl DBManager {
         )?;
 
         Ok(())
+    }
+}
+
+impl DBManager {
+    pub fn with_connection<F, R>(&self, f: F) -> Result<R, DBManagerError>
+    where
+        F: FnOnce(&Connection) -> R,
+    {
+        let lock = self.connection.lock().unwrap();
+        match lock.as_ref() {
+            Some(conn) => Ok(f(conn)),
+            None => Err(DBManagerError::Database(RusqliteError::InvalidQuery)), // или своё
+        }
     }
 }

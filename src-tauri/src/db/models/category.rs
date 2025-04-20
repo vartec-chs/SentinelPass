@@ -51,12 +51,10 @@ impl Category {
         }
     }
 
-	pub fn to_category_dtos(categories: Vec<Category>) -> Vec<CategoryDto> {
-		categories.into_iter().map(Into::into).collect()
-	}
-	
+    pub fn to_categories_dto(categories: Vec<Category>) -> Vec<CategoryDto> {
+        categories.into_iter().map(Into::into).collect()
+    }
 }
-
 
 impl From<Category> for CategoryDto {
     fn from(c: Category) -> Self {
@@ -68,5 +66,8 @@ impl From<Category> for CategoryDto {
             created_at: c.created_at,
             updated_at: c.updated_at,
         }
-    }
+	}
 }
+
+
+
