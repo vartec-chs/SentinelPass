@@ -2,6 +2,7 @@
 
 // use states::{db_async_state::DBAsyncState, main_state::MainState};
 
+use commands::*;
 use states::db_state::DBState;
 
 pub mod commands;
@@ -28,13 +29,15 @@ pub async fn run() {
         .plugin(tauri_plugin_clipboard_manager::init())
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
-            // db_store_cmd::create_store_cmd,
-            // db_store_cmd::open_store_cmd,
-            // db_store_cmd::close_store_cmd,
-            // password_generator_cmd::generate_password_cmd,
-            // password_generator_cmd::open_password_generator_cmd,
-            // password_generator_cmd::close_password_generator_cmd,
-            // icon_cmd::load_icon_base64
+            storage_cmd::create_store_cmd,
+            storage_cmd::open_store_cmd,
+            storage_cmd::close_store_cmd,
+
+            password_generator_cmd::generate_password_cmd,
+            password_generator_cmd::open_password_generator_cmd,
+            password_generator_cmd::close_password_generator_cmd,
+			
+            icon_cmd::load_icon_base64
         ])
         .run(tauri::generate_context!())
         .expect("Error running tauri application");
