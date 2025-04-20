@@ -4364,6 +4364,7 @@ dependencies = [
  "tauri-plugin-stronghold",
  "thiserror 2.0.12",
  "tokio",
+ "tokio_sqlcipher",
  "uuid",
 ]
 
@@ -5498,6 +5499,15 @@ dependencies = [
  "futures-core",
  "futures-sink",
  "pin-project-lite",
+ "tokio",
+]
+
+[[package]]
+name = "tokio_sqlcipher"
+version = "0.1.0"
+dependencies = [
+ "crossbeam-channel",
+ "rusqlite",
  "tokio",
 ]
 

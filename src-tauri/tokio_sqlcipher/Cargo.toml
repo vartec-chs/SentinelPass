@@ -1,0 +1,26 @@
+[package]
+name = "tokio_sqlcipher"
+version = "0.1.0"
+edition = "2024"
+
+# [features]
+# bundled = ["rusqlite/bundled"]
+# sqlcipher = ["rusqlite/sqlcipher"]
+
+
+[dependencies]
+crossbeam-channel = "0.5"
+rusqlite = { version = "0.35", features = ["bundled-sqlcipher",
+	"chrono",
+	"blob",
+	"serde_json",
+	"uuid"] }
+tokio = { version = "1", features = ["sync"] }
+
+[dev-dependencies]
+rusqlite = { version = "0.35", features = ["bundled-sqlcipher",
+	"chrono",
+	"blob",
+	"serde_json",
+	"uuid"] }
+tokio = { version = "1", features = ["full"] }
