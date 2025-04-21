@@ -86,3 +86,4 @@ pub async fn generate_password_cmd(
         )),
     }
 }
+

@@ -1,7 +1,3 @@
-// use commands::{db_store_cmd, icon_cmd, password_generator_cmd};
-
-// use states::{db_async_state::DBAsyncState, main_state::MainState};
-
 use commands::*;
 use states::db_state::DBState;
 
@@ -16,8 +12,6 @@ pub mod utils;
 #[tokio::main]
 pub async fn run() {
     tauri::Builder::default()
-        // .manage(MainState::default())
-        // .manage(DBAsyncState::default())
         .manage(DBState::default())
         .plugin(tauri_plugin_stronghold::Builder::new(|_| todo!()).build())
         .plugin(tauri_plugin_store::Builder::new().build())
@@ -29,14 +23,15 @@ pub async fn run() {
         .plugin(tauri_plugin_clipboard_manager::init())
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
+            // DB
             storage_cmd::create_store_cmd,
             storage_cmd::open_store_cmd,
             storage_cmd::close_store_cmd,
-
+            // Password generator
             password_generator_cmd::generate_password_cmd,
             password_generator_cmd::open_password_generator_cmd,
             password_generator_cmd::close_password_generator_cmd,
-			
+            // Icon generator
             icon_cmd::load_icon_base64
         ])
         .run(tauri::generate_context!())
