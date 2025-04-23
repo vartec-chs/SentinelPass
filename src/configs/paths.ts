@@ -14,4 +14,5 @@ export const PATHS = {
 		CREATE: 'password-storage?mode=create',
 		OPEN: 'password-storage?mode=open',
 	},
+	TEST: '/test',
 }

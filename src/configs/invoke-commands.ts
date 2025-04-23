@@ -14,4 +14,8 @@ export const INVOKE_COMMANDS = {
 	icon: {
 		loadIconBase64: 'load_icon_base64',
 	},
+
+	test: {
+		testWindow: 'test_window_cmd',
+	},
 }

@@ -1,6 +1,6 @@
 import { type FC, ReactNode } from 'react'
 
-import { ListItemButton, ListItemButtonProps, ListItemText } from '@mui/material'
+import { ListItemButton, ListItemButtonProps, ListItemIcon, ListItemText } from '@mui/material'
 
 interface ListItemProps extends ListItemButtonProps {
 	index: number
@@ -28,16 +28,13 @@ export const ListItem: FC<ListItemProps> = ({
 				px: 1,
 				mt: index === 0 ? 0.3 : 0,
 				mb: isEnd ? 0 : 0.3,
-				display: 'flex',
-				alignItems: 'center',
-				gap: 1,
 			})}
 			{...props}
 			selected={selected}
 			key={index}
 			onClick={onClick}
 		>
-			{icon}
+			{icon && <ListItemIcon>{icon}</ListItemIcon>}
 			<ListItemText
 				sx={{ '& .MuiTypography-root': { fontSize: 14 } }}
 				primary={`${title} ${index + 1 || ''}`}

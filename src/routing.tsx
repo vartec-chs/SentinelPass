@@ -7,6 +7,7 @@ import {
 	HomeScreen,
 	PasswordGeneratorScreen,
 	PasswordStorageScreen,
+	TestScreen,
 } from '@screens'
 
 import { PATHS } from '@configs'
@@ -33,6 +34,10 @@ export const router = createBrowserRouter([
 					{
 						path: PATHS.PASSWORD_GENERATOR,
 						element: <PasswordGeneratorScreen />,
+					},
+					{
+						path: PATHS.TEST,
+						element: <TestScreen />,
 					},
 				],
 			},

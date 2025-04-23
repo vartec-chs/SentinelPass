@@ -65,6 +65,7 @@ export const HomeScreen: FC = () => {
 
 	const createStorage = () => navigate(`/${PATHS.PASSWORD_STORAGE.CREATE}`)
 	const openStorage = () => navigate(`/${PATHS.PASSWORD_STORAGE.OPEN}`)
+	const openTest = () => navigate(`${PATHS.TEST}`)
 
 	return (
 		<AnimationScreen>
@@ -115,6 +116,7 @@ export const HomeScreen: FC = () => {
 				</Button>
 
 				<Button onClick={handleClick}>Open Confirm</Button>
+				<Button onClick={openTest}>Open Test</Button>
 			</Paper>
 		</AnimationScreen>
 	)
